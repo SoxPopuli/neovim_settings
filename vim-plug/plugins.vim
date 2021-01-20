@@ -12,6 +12,10 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'vim-airline/vim-airline-themes'
         let g:airline#extensions#tabline#enabled = 1
         let g:airline#extensions#tabline#formatter = 'default'
+        let g:airline_theme = 'dracula'
+
+    Plug 'preservim/tagbar'
+        nmap <F8> :TagbarToggle<CR>
 
     " Better Syntax Support
     Plug 'sheerun/vim-polyglot'
