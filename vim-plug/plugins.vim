@@ -8,6 +8,11 @@ endif
 
 call plug#begin('~/.config/nvim/autoload/plugged')
 
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+        let g:airline#extensions#tabline#enabled = 1
+        let g:airline#extensions#tabline#formatter = 'default'
+
     " Better Syntax Support
     Plug 'sheerun/vim-polyglot'
     " File Explorer
@@ -38,6 +43,13 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 
         inoremap <silent><expr> <c-space> coc#refresh()
         nnoremap <Leader>rn <Plug>(coc-rename)
+        "inoremap <nowait><expr> <C-j> coc#float#scroll(1)
+        "inoremap <nowait><expr> <C-k> coc#float#scroll(0)
+
+        nnoremap <nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-k>"
+        nnoremap <nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-j>"
+        inoremap <nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+        inoremap <nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
         
     " C++ header / source switching
     Plug 'ericcurtin/CurtineIncSw.vim'
