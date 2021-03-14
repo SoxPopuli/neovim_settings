@@ -21,10 +21,11 @@ set number
 set relativenumber
 
 " enable mouse support
-set mouse=a
+set mouse=nv
 
 " enable terminal debug
 packadd termdebug
+let g:termdebug_wide=1
 
 " enable ctags
 :syntax on

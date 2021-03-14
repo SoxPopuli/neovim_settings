@@ -6,6 +6,14 @@
 
     },
     
-    "clangd.path": "/usr/bin/clangd"
+    "clangd.semanticHighlighting": "true",
+    "clangd.path": "/usr/bin/clangd",
+
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "/usr/lib/jvm/java-8-openjdk/",
+        }
+    ]
 
 }

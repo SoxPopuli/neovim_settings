@@ -50,10 +50,10 @@ call plug#begin('~/.config/nvim/autoload/plugged')
         "inoremap <nowait><expr> <C-j> coc#float#scroll(1)
         "inoremap <nowait><expr> <C-k> coc#float#scroll(0)
 
-        nnoremap <nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-k>"
-        nnoremap <nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-j>"
-        inoremap <nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-        inoremap <nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+        nnoremap <nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-k>"
+        nnoremap <nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-j>"
+        inoremap <nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+        inoremap <nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
         
     " C++ header / source switching
     Plug 'ericcurtin/CurtineIncSw.vim'
@@ -78,5 +78,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
         let g:rainbow_active = 1
 
     Plug 'dracula/vim',{'as':'dracula'}
+
+    Plug 'chrisbra/unicode.vim'
 
 call plug#end()
