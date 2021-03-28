@@ -1,11 +1,18 @@
 {
-    "cmake": {
-        "command": "cmake-language-server",
-        "filetypes": ["cmake", "txt"],
-        "rootPatterns": ["build/", "Debug/", "Release/"]
+    "languageserver": {
+        "cmake": {
+            "command": "cmake-language-server",
+            "filetypes": ["cmake", "txt"],
+            "rootPatterns": ["build/", "Debug/", "Release/"]
 
+        },
+        "omnisharp": {
+            "command": "/opt/omnisharp-roslyn-bundled/run",
+            "args": ["-lsp"],
+            "filetypes": ["cs", "csproj", "sln"],
+            "trace.server": "verbose"
+        }
     },
-    
     "clangd.semanticHighlighting": "true",
     "clangd.path": "/usr/bin/clangd",
 
