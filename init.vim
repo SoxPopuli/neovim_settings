@@ -1,7 +1,15 @@
 let mapleader = ","
-source $HOME/.config/nvim/vim-plug/plugins.vim
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
 
+let g:python_host_skip_check=1
+let g:loaded_python3_provider=1
+
+source $HOME/.config/nvim/vim-plug/plugins.vim
 colorscheme dracula
+
+set path+=**
+set lcs+=space:.
 
 set tabstop=4
 set softtabstop=4
@@ -32,13 +40,17 @@ let g:termdebug_wide=1
 
 " keybinds
     nnoremap <F1> <Cmd>:nohl<CR>
+
+    noremap  <F2> <Cmd>:set list! \| set list?<CR>
+    noremap! <F2> <Cmd>:set list! \| set list?<CR>
+
     tnoremap <Esc> <C-\><C-n>
     nnoremap <A-z> :set wrap! \| set wrap?<CR>
     map! <C-BS> <C-w>
     map! <C-h> <C-w>
     
     "Ctrl-Z undo
-    noremap <C-z> <Cmd>:undo<CR>
+    "noremap <C-z> <Cmd>:undo<CR>
     inoremap <C-z> <Cmd>:undo<CR>
     
     "Ctrl-S save
