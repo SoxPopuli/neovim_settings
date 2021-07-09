@@ -1,0 +1,9 @@
+LINK 800
+
+@rep 42
+    link 34
+@end
+
+MARK LOOP
+addi x 1 m
+JUMP LOOP
