@@ -2,8 +2,8 @@ let mapleader = ","
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 
-let g:python_host_skip_check=1
-let g:loaded_python3_provider=1
+"let g:python_host_skip_check=1
+"let g:loaded_python3_provider=1
 
 source $HOME/.config/nvim/vim-plug/plugins.vim
 colorscheme dracula
@@ -19,6 +19,9 @@ set autowrite
 set autowriteall
 set linebreak
 set breakindent
+set smartindent
+filetype plugin indent on
+filetype indent on
 
 set showmatch
 set nowrap
@@ -66,3 +69,9 @@ let g:termdebug_wide=1
     nnoremap <A-j> <C-w>j
     nnoremap <A-h> <C-w>h
     nnoremap <A-l> <C-w>l
+
+    "Namespace helper
+    inoremap <C-l> ::
+
+    "Undo Tab
+    inoremap <S-Tab> <C-D>

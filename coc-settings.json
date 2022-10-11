@@ -1,18 +1,64 @@
 {
-    "omnisharp": {
-            "command": "/opt/omnisharp-roslyn-bundled/run",
-            "args": ["-lsp"],
-            "filetypes": ["cs", "csproj", "sln"],
-            "trace.server": "verbose"
+    "coc.preferences.colorSupport": true,
+    "coc.preferences.semanticTokensHighlights": false,
+
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextAlign": "right",
+    "diagnostic.virtualTextCurrentLineOnly": true,
+    "diagnostic.enableMessage": "always",
+    "diagnostic.messageTarget": "echo",
+
+
+    "languageserver": {
+        "clangd": {
+            "command": "clangd",
+            "rootPatterns": ["compile_commands.json", "build/compile_commands.json", "build/debug/compile_commands.json"],
+            "filetypes": ["c", "cpp", "cxx", "c++"]
+        }
     },
+
+
+    /*
     "clangd.semanticHighlighting": "true",
     "clangd.path": "/usr/bin/clangd",
+    "clangd.fallbackFlags": "-Wall -Wextra -std=c++20 -Iinclude",
+    "clangd.compilationDatabasePath": [ 
+        "./build/compile_commands.json",
+        "./compile_commands.json"
+    ],
+    */
+
+    //"codeLens.enable": true,
+    "rust-analyzer.updates.channel": "stable",
+    "rust-analyzer.lens.enable": false,
+    "rust-analyzer.cargo.loadOutDirsFromCheck": true,
+    "rust-analyzer.inlayHints.enable": true,
+    "rust-analyzer.inlayHints.typeHints": true,
+
+    "cmake": {
+        "command": "cmake-language-server",
+        "filetypes": ["cmake", "CMakeLists.txt"]
+    },
+
+    "coc.source.OmniSharp.enable": true,
+    "coc.source.OmniSharp.triggerCharacters": ".",
+
+    "omnisharp.path": "/usr/bin/omnisharp",
+    "omnisharp.trace.server": "verbose",
+    //"omnisharp": {
+            //"command": "/usr/bin/omnisharp",
+            //"args": ["-lsp"],
+            //"filetypes": ["cs", "csproj", "sln"],
+            //"trace.server": "verbose"
+    //},
 
     "java.configuration.runtimes": [
         {
             "name": "JavaSE-1.8",
-            "path": "/usr/lib/jvm/java-8-openjdk/",
+            "path": "/usr/lib/jvm/java-8-openjdk/"
         }
-    ]
+    ],
+    "coc.source.vimtex.filetypes": [ "tex", "plaintex", "latex" ],
+    "coc.source.vimtex.enable": "true"
 
 }
