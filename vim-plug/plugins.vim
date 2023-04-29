@@ -17,118 +17,127 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 "        let g:airline#extensions#tabline#formatter = 'default'
 "        let g:airline_theme = 'dracula'
 
-
-    Plug 'feline-nvim/feline.nvim'
-    Plug 'kyazdani42/nvim-web-devicons'
-
-
-
-    Plug 'preservim/tagbar'
-        nmap <F8> :TagbarToggle<CR>
-
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-
-
-    " Better Syntax Support
-    Plug 'sheerun/vim-polyglot'
-    " File Explorer
-    Plug 'scrooloose/NERDTree'
-    " Auto pairs for '(' '[' '{'
-    Plug 'jiangmiao/auto-pairs'
-        let g:AutoPairsMapCh=0
-
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
     Plug 'preservim/nerdcommenter'
         "nnoremap <Bslash> <Cmd>:call NERDComment('n', 'Toggle')<CR>
         nmap <Bslash> <plug>NERDCommenterToggle
         vmap <Bslash> <plug>NERDCommenterToggle
-    
-    " autocomplete
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-        let g:coc_snippet_next="<Tab>"
+    if exists('g:vscode')
+        " use VSCode easymotion when in VSCode mode
+        Plug 'asvetliakov/vim-easymotion', { 'as': 'vsc-easymotion' }
+    else
+        " use normal easymotion when in VIM mode
+        Plug 'easymotion/vim-easymotion'
 
-        " use <tab> for trigger completion and navigate to the next complete item
-        function! CheckBackspace() abort
-          let col = col('.') - 1
-          return !col || getline('.')[col - 1]  =~# '\s'
-        endfunction
+        Plug 'feline-nvim/feline.nvim'
+        Plug 'kyazdani42/nvim-web-devicons'
 
-        inoremap <silent><expr> <Tab>
-              \ coc#pum#visible() ? coc#pum#next(1) :
-              \ CheckBackspace() ? "\<Tab>" :
-              \ coc#refresh()
+        Plug 'preservim/tagbar'
+            nmap <F8> :TagbarToggle<CR>
 
-        inoremap <silent><expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
-        inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+        Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 
-        inoremap <silent><expr> <c-space> coc#refresh()
 
-        nnoremap <Leader>cr <Plug>(coc-rename)
-        nnoremap <Leader>rn <Plug>(coc-rename)
-        nnoremap <Leader>rf <Plug>(coc-refactor)
+        " Better Syntax Support
+        Plug 'sheerun/vim-polyglot'
+        " File Explorer
+        Plug 'scrooloose/NERDTree'
+        " Auto pairs for '(' '[' '{'
+        Plug 'jiangmiao/auto-pairs'
+            let g:AutoPairsMapCh=0
 
-        nnoremap <silent> gf <Plug>(coc-definition)
-        nnoremap <silent> gc <Plug>(coc-declaration)
-        nnoremap <silent> gi <Plug>(coc-declaration)
-
-        nnoremap <silent> g[ <Plug>(coc-diagnostic-prev)
-        nnoremap <silent> g] <Plug>(coc-diagnostic-next)
-        nnoremap <silent> g, <Plug>(coc-diagnostic-next-error)
-        nnoremap <silent> g. <Plug>(coc-diagnostic-next-error)
-
-        nnoremap <silent> <Leader>f <Plug>(coc-float-hide)
-        nnoremap <Leader>k :call CocActionAsync('diagnosticInfo') <CR>
-
-        nnoremap <nowait><expr> <C-Down> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-k>"
-        nnoremap <nowait><expr> <C-Up> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-j>"
-        inoremap <nowait><expr> <C-Down> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-        inoremap <nowait><expr> <C-Up> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
         
-    " C++ header / source switching
-    Plug 'ericcurtin/CurtineIncSw.vim'
-        map <F4> <Cmd>:call CurtineIncSw()<CR>
+        " autocomplete
+        Plug 'neoclide/coc.nvim', {'branch': 'release'}
+            let g:coc_snippet_next="<Tab>"
 
-"    "syntax highlighting
-"    Plug 'jackguo380/vim-lsp-cxx-highlight'
-"        "let g:lsp_cxx_hl_use_text_props = 1
-"        let g:cpp_class_scope_highlight = 1
-"        let g:cpp_member_variable_highlight = 1
-"        let g:cpp_class_decl_highlight = 1 
+            " use <tab> for trigger completion and navigate to the next complete item
+            function! CheckBackspace() abort
+              let col = col('.') - 1
+              return !col || getline('.')[col - 1]  =~# '\s'
+            endfunction
+
+            inoremap <silent><expr> <Tab>
+                  \ coc#pum#visible() ? coc#pum#next(1) :
+                  \ CheckBackspace() ? "\<Tab>" :
+                  \ coc#refresh()
+
+            inoremap <silent><expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+            inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
+            inoremap <silent><expr> <c-space> coc#refresh()
+
+            nnoremap <Leader>cr <Plug>(coc-rename)
+            nnoremap <Leader>rn <Plug>(coc-rename)
+            nnoremap <Leader>rf <Plug>(coc-refactor)
+
+            nnoremap <silent> gf <Plug>(coc-definition)
+            nnoremap <silent> gc <Plug>(coc-declaration)
+            nnoremap <silent> gi <Plug>(coc-declaration)
+
+            nnoremap <silent> g[ <Plug>(coc-diagnostic-prev)
+            nnoremap <silent> g] <Plug>(coc-diagnostic-next)
+            nnoremap <silent> g, <Plug>(coc-diagnostic-next-error)
+            nnoremap <silent> g. <Plug>(coc-diagnostic-next-error)
+
+            nnoremap <silent> <Leader>f <Plug>(coc-float-hide)
+            nnoremap <Leader>k :call CocActionAsync('diagnosticInfo') <CR>
+
+            nnoremap <nowait><expr> <C-Down> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-k>"
+            nnoremap <nowait><expr> <C-Up> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-j>"
+            inoremap <nowait><expr> <C-Down> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+            inoremap <nowait><expr> <C-Up> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+            
+        " C++ header / source switching
+        Plug 'ericcurtin/CurtineIncSw.vim'
+            map <F4> <Cmd>:call CurtineIncSw()<CR>
+
+    "    "syntax highlighting
+    "    Plug 'jackguo380/vim-lsp-cxx-highlight'
+    "        "let g:lsp_cxx_hl_use_text_props = 1
+    "        let g:cpp_class_scope_highlight = 1
+    "        let g:cpp_member_variable_highlight = 1
+    "        let g:cpp_class_decl_highlight = 1 
 
 
-    Plug 'vim-syntastic/syntastic'
-        set statusline+=%#warningmsg#
-        set statusline+=%{SyntasticStatuslineFlag()}
-        set statusline+=%*
+        Plug 'vim-syntastic/syntastic'
+            set statusline+=%#warningmsg#
+            set statusline+=%{SyntasticStatuslineFlag()}
+            set statusline+=%*
 
-        let g:syntastic_check_on_open = 1
-        let g:syntastic_always_populate_loc_list = 1
-        let g:syntastic_auto_loc_list = 0
-        let g:syntastic_check_on_wq = 0
+            let g:syntastic_check_on_open = 1
+            let g:syntastic_always_populate_loc_list = 1
+            let g:syntastic_auto_loc_list = 0
+            let g:syntastic_check_on_wq = 0
 
-        let g:syntastic_cpp_checkers = ['clang-tidy']
-        let g:syntastic_cpp_cpplint_exec = 'clang-tidy'
-        let g:syntastic_c_checkers = ['clang-tidy']
-        let g:syntastic_cpp_compiler_options = '-std=c++2a'
+            let g:syntastic_cpp_checkers = ['clang-tidy']
+            let g:syntastic_cpp_cpplint_exec = 'clang-tidy'
+            let g:syntastic_c_checkers = ['clang-tidy']
+            let g:syntastic_cpp_compiler_options = '-std=c++2a'
 
-        let g:syntastic_tex_checkers = ['chktex']
+            let g:syntastic_tex_checkers = ['chktex']
 
-    
+        
 
-    "Plug 'junegunn/rainbow_parentheses.vim'
-        "let g:rainbow#max_level = 32
-        "let g:rainbow#pairs = [ ['(', ')'], ['[', ']'], ['{', '}'] ]
-        "let g:rainbow#blacklist = [15]
-        "autocmd BufEnter * RainbowParentheses
+        "Plug 'junegunn/rainbow_parentheses.vim'
+            "let g:rainbow#max_level = 32
+            "let g:rainbow#pairs = [ ['(', ')'], ['[', ']'], ['{', '}'] ]
+            "let g:rainbow#blacklist = [15]
+            "autocmd BufEnter * RainbowParentheses
 
-    Plug 'p00f/nvim-ts-rainbow'
+        Plug 'p00f/nvim-ts-rainbow'
 
-    Plug 'dracula/vim',{'as':'dracula'}
-    Plug 'chrisbra/unicode.vim'
-    Plug 'lervag/vimtex'
+        Plug 'dracula/vim',{'as':'dracula'}
+        Plug 'chrisbra/unicode.vim'
+        Plug 'lervag/vimtex'
+    endif
+
+    map <Leader> <Plug>(easymotion-prefix)
+
 call plug#end()
 
+if !exists('g:vscode')
 lua <<EOF
 require('nvim-treesitter.configs').setup {
     ensure_installed = { "c", "cpp", "rust", }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -254,7 +263,7 @@ table.insert(components.active[3], {
     provider = function() 
         status = vim.g.coc_status
         if status ~= nil then
-            return status
+            return status:gsub("%%", "") .. ' '
         else
             return ''
         end
@@ -314,3 +323,4 @@ augroup hl
     autocmd BufEnter *.cpp,*.hpp hi! def link TSProperty TSField
     autocmd BufEnter *.cpp,*.hpp hi! TSPunctBracket ctermfg=0
 augroup END
+endif

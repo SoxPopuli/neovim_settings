@@ -6,7 +6,17 @@ set termguicolors
 "let g:loaded_python3_provider=1
 
 source $HOME/.config/nvim/vim-plug/plugins.vim
-colorscheme dracula
+
+if !exists('g:vscode')
+    colorscheme dracula
+    
+    " enable terminal debug
+    packadd termdebug
+    let g:termdebug_wide=1
+
+    " enable ctags
+    :syntax on
+endif
 
 set path+=**
 set lcs+=space:.
@@ -34,12 +44,6 @@ set relativenumber
 " enable mouse support
 set mouse=nv
 
-" enable terminal debug
-packadd termdebug
-let g:termdebug_wide=1
-
-" enable ctags
-:syntax on
 
 " keybinds
     nnoremap <F1> <Cmd>:nohl<CR>

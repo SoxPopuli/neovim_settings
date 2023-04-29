@@ -6,7 +6,7 @@
     "diagnostic.virtualTextAlign": "right",
     "diagnostic.virtualTextCurrentLineOnly": true,
     "diagnostic.enableMessage": "always",
-    "diagnostic.messageTarget": "echo",
+    "diagnostic.messageTarget": "float",
 
 
     "languageserver": {
@@ -14,6 +14,20 @@
             "command": "clangd",
             "rootPatterns": ["compile_commands.json", "build/compile_commands.json", "build/debug/compile_commands.json"],
             "filetypes": ["c", "cpp", "cxx", "c++"]
+        },
+
+        "elmLS": {
+            "command": "elm-language-server",
+            "filetypes": [ "elm" ],
+            "rootPatterns": ["elm.json"],
+            "trace.server": "verbose",
+            "initializationOptions": {
+                "elmPath": "elm",
+                "elmFormatPath": "elm-format",
+                "elmTestPath": "elm-test",
+                "disableElmLSDiagnostics": false,
+                "skipInstallPackageConfirmation": false
+            }
         }
     },
 
