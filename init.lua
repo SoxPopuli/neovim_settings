@@ -13,9 +13,16 @@ plugins.startup()
 vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
 
 if vim.g.vscode == nil then
-    -- local treesitter = require('tsConfig')
+    -- plugins.treesitterUpdate()
+    -- plugins.treesitterConfig()
+
+
+    vim.cmd.colorscheme("dracula")
     vim.cmd.packadd("termdebug")
     vim.go.termdebug_wide = 1
+
+    local treesitter = require('tsConfig')
+    treesitter.setup()
 end
 
 vim.o.path = vim.o.path .. "**"

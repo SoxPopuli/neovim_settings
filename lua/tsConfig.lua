@@ -1,10 +1,10 @@
-local treesitter = {}
+local M = {}
 
-local function treesitter.setup()
+function M.setup()
 	local rainbow = require('ts-rainbow')
 
 	local setupConfig = {
-	    ensure_installed = {
+		ensure_installed = {
 		'rust',
 		'lua',
 		'vim',
@@ -14,21 +14,23 @@ local function treesitter.setup()
 		'latex',
 		'markdown',
 		'regex',
-	    },
+		},
 
-	    sync_install = true,
+		sync_install = true,
 
-	    highlight = {
-		enable = true
-	    },
+		highlight = {
+			enable = true
+		},
 
-	    rainbow = {
-		enable = true,
-		query = 'rainbow-parens',
-		strategy = rainbow.strategy.global
-	    }
+		rainbow = {
+			enable = true,
+			query = 'rainbow-parens',
+			strategy = rainbow.strategy.global
+		}
 	}
+
 	require('nvim-treesitter.configs').setup(setupConfig)
 end
 
-return treesitter
+
+return M

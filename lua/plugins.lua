@@ -41,7 +41,7 @@ local function treesitterConfig()
       end
     })
 
-    require('tsConfig').setup()
+    -- require('tsConfig')
 end
 
 local function packerStartup(use)
@@ -54,12 +54,14 @@ local function packerStartup(use)
 
     use { 'preservim/nerdcommenter' }
 
+    use { 'dracula/vim', as = 'dracula' }
+
     -- LSP plugins
     local lsp_plugins = {
         { 'neovim/nvim-lspconfig' },
-        { 'williamboman/mason.nvim', run = ':MasonUpdate' },
+        { 'williamboman/mason.nvim', run = ':masonupdate' },
         { 'williamboman/mason-lspconfig.nvim' },
-        { 'SirVer/ultisnips' },
+        { 'sirver/ultisnips' },
         { 'hrsh7th/cmp-nvim-lsp' },
         { 'hrsh7th/cmp-buffer' },
         { 'hrsh7th/cmp-path' },
@@ -76,7 +78,6 @@ local function packerStartup(use)
 
     use {
         'hrsh7th/nvim-cmp',
-        after = lsp_plugin_names,
         config = function() require('lsp').setup() end,
     }
     -- End LSP Plugins
@@ -103,9 +104,10 @@ local function packerStartup(use)
     -- use normal easymotion when in VIM mode
     use { 'easymotion/vim-easymotion', config = easymotionConfig }
 
-    use { -- Treesitter
+    -- Treesitter
+    use { 'HiPhish/nvim-ts-rainbow2' }
+    use {
         'nvim-treesitter/nvim-treesitter',
-        'HiPhish/nvim-ts-rainbow2',
         run = treesitterUpdate,
         config = treesitterConfig,
     }
@@ -118,12 +120,6 @@ local function packerStartup(use)
     use {
         'jiangmiao/auto-pairs',
         config = function() vim.g.AutoPairsMapCh = 0 end,
-    }
-
-    use {
-        'dracula/vim',
-        as = 'dracula',
-        config = function() vim.cmd.colorscheme('dracula') end,
     }
 
     use {
