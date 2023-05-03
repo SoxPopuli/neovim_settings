@@ -1,31 +1,34 @@
 local treesitter = {}
-local rainbow = require('ts-rainbow')
 
-local setupConfig = {
-    ensure_installed = {
-        'rust',
-        'lua',
-        'vim',
-        'c_sharp',
-        'elm',
-        'json',
-        'latex',
-        'markdown',
-        'regex',
-    },
+local function treesitter.setup()
+	local rainbow = require('ts-rainbow')
 
-    sync_install = true,
+	local setupConfig = {
+	    ensure_installed = {
+		'rust',
+		'lua',
+		'vim',
+		'c_sharp',
+		'elm',
+		'json',
+		'latex',
+		'markdown',
+		'regex',
+	    },
 
-    highlight = {
-        enable = true
-    },
+	    sync_install = true,
 
-    rainbow = {
-        enable = true,
-        query = 'rainbow-parens',
-        strategy = rainbow.strategy.global
-    }
-}
-require('nvim-treesitter.configs').setup(setupConfig)
+	    highlight = {
+		enable = true
+	    },
+
+	    rainbow = {
+		enable = true,
+		query = 'rainbow-parens',
+		strategy = rainbow.strategy.global
+	    }
+	}
+	require('nvim-treesitter.configs').setup(setupConfig)
+end
 
 return treesitter

@@ -3,16 +3,17 @@ vim.cmd([[let mapleader = ","]])
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 
 local plugins = require('plugins')
-local treesitter = require('tsConfig')
-local lsp = require('lsp')
 
 if plugins.CheckPackerExists() == false then
     plugins.InstallPacker()
 end
 
+plugins.startup()
+
+vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
 
 if vim.g.vscode == nil then
-    vim.cmd.colorscheme("dracula")
+    -- local treesitter = require('tsConfig')
     vim.cmd.packadd("termdebug")
     vim.go.termdebug_wide = 1
 end
