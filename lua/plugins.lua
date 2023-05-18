@@ -30,6 +30,22 @@ local function treesitterUpdate()
     tsUpdate()
 end
 
+function FzfGit()
+    local hasGitIgnore = vim.fn.glob('.gitignore') ~= ""
+
+    local srcCmd = nil -- nil command uses default file search
+    if hasGitIgnore then
+        srcCmd = 'git ls-files'
+    end
+
+    local windowSize = { width = 0.9, height = 0.6 }
+    vim.call('fzf#run', {
+        source = srcCmd,
+        sink = 'e',
+        window = windowSize,
+    })
+end
+
 local function treesitterConfig()
     vim.o.foldlevel = 16
 
@@ -131,7 +147,8 @@ local function packerStartup(use)
         'junegunn/fzf',
         run = ':call fzf#install()',
         config = function()
-            vim.keymap.set('n', '<C-p>', '<cmd>FZF<cr>')
+            -- vim.keymap.set('n', '<C-p>', '<cmd>FZF<cr>')
+            vim.keymap.set('n', '<C-p>', FzfGit)
         end,
     }
 
