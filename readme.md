@@ -1,9 +1,7 @@
-my neovim settings
-includes:
-- vim plug
-- plugins file
+# My Neovim Config
 
-requires:
-- nodejs
-- pynvim
-- ccls
+Requires Neovim >= v8.0
+
+Uses 
+- Native lsp
+- Treesitter
