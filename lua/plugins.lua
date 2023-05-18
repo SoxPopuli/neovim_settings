@@ -66,6 +66,7 @@ local function packerStartup(use)
         { 'hrsh7th/cmp-buffer' },
         { 'hrsh7th/cmp-path' },
         { 'hrsh7th/cmp-cmdline' },
+        { 'simrat39/rust-tools.nvim' },
     }
     local lsp_plugin_names = {}
 
@@ -75,6 +76,10 @@ local function packerStartup(use)
 
         lsp_plugin_names[i] = item[1]:sub(slash_index+1)
     end
+
+    use { 'ionide/Ionide-vim' }
+
+    use { 'simrat39/inlay-hints.nvim' }
 
     use {
         'hrsh7th/nvim-cmp',

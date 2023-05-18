@@ -4,6 +4,12 @@ local M = {}
 function M.setup()
   local lspconfig = require('lspconfig')
   local cmp = require('cmp')
+  local rt = require('rust-tools')
+  local ih = require('inlay-hints')
+
+  ih.setup({
+      only_current_line = false,
+  })
 
   cmp.setup({
       snippet = {
@@ -20,8 +26,12 @@ function M.setup()
               ['<C-space>'] = cmp.mapping.complete(),
               ['<C-e>'] = cmp.mapping.abort(),
               ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item
+
               ['<tab>'] = cmp.mapping.select_next_item(),
               ['<S-tab>'] = cmp.mapping.select_prev_item(),
+
+              ['<Down>'] = cmp.mapping.select_next_item(),
+              ['<Up>'] = cmp.mapping.select_prev_item(),
       }),
       sources = cmp.config.sources({
           { name = 'nvim_lsp' },
@@ -49,23 +59,42 @@ function M.setup()
     })
   })
 
+
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
   -- Setup Installer
   require('mason').setup()
   require('mason-lspconfig').setup({
-      ensure_installed = { 'lua_ls', 'rust_analyzer', 'elmls' }
+      ensure_installed = { 'lua_ls', 'rust_analyzer', 'elmls', 'fsautocomplete' }
   })
 
-  lspconfig.rust_analyzer.setup {
-      settings = {
-          ['rust-analyzer'] = {},
-      },
-      capabilities = capabilities,
-  }
+  rt.setup({
+      server = {
+        on_attach = function (_, bufnr)
+          -- Hover actions
+          vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+          -- Code action groups
+          vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+        end
+      }
+  })
 
-  lspconfig.fsharp_language_server.setup{ capabilities = capabilities }
+  -- vim.api.nvim_create_autocmd({'BufEnter', 'BufWinEnter'}, {
+  --     pattern = '*.rs',
+  --     callback = function() rt.inlay_hints.set() end,
+  -- })
+
+  -- lspconfig.rust_analyzer.setup {
+  --     settings = {
+  --         ['rust-analyzer'] = {},
+  --     },
+  --     capabilities = capabilities,
+  --     on_attach = function() rt.inlay_hints.enable() end,
+  -- }
+
+  -- lspconfig.fsautocomplete.setup{ capabilities = capabilities, on_attach = function (c, b) ih.on_attach(c, b) end }
+  -- lspconfig.ionide.setup{ capabilities = capabilities }
   lspconfig.jsonls.setup{ capabilities = capabilities }
   lspconfig.elmls.setup{ capabilities = capabilities }
   lspconfig.html.setup{ capabilities = capabilities }
