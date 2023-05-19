@@ -1,15 +1,41 @@
 local M = {}
 local dap = require('lsp.dap')
 
-function M.setup()
-  local lspconfig = require('lspconfig')
-  local cmp = require('cmp')
-  local rt = require('rust-tools')
-  local ih = require('inlay-hints')
+local lspconfig = require('lspconfig')
+local cmp = require('cmp')
+local rt = require('rust-tools')
+local hints = require('inlay-hints')
 
-  ih.setup({
-      only_current_line = false,
-  })
+local function lspOnAttach(client, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = bufnr }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<space>f', function()
+      vim.lsp.buf.format { async = true }
+    end, opts)
+
+    -- hints.setup()
+    -- hints.on_attach(client, bufnr)
+end
+
+function M.setup()
 
   cmp.setup({
       snippet = {
@@ -66,16 +92,25 @@ function M.setup()
   -- Setup Installer
   require('mason').setup()
   require('mason-lspconfig').setup({
-      ensure_installed = { 'lua_ls', 'rust_analyzer', 'elmls', 'fsautocomplete' }
+      ensure_installed = { 
+        'lua_ls',
+        'rust_analyzer',
+        'elmls',
+        'jsonls',
+        'html',
+        'fsautocomplete',
+      }
   })
 
   rt.setup({
       server = {
-        on_attach = function (_, bufnr)
+        on_attach = function (client, bufnr)
           -- Hover actions
           vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
           -- Code action groups
           vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+
+          lspOnAttach(client, bufnr)
         end
       }
   })
@@ -93,16 +128,36 @@ function M.setup()
   --     on_attach = function() rt.inlay_hints.enable() end,
   -- }
 
-  -- lspconfig.fsautocomplete.setup{ capabilities = capabilities, on_attach = function (c, b) ih.on_attach(c, b) end }
-  -- lspconfig.ionide.setup{ capabilities = capabilities }
-  lspconfig.jsonls.setup{ capabilities = capabilities }
-  lspconfig.elmls.setup{ capabilities = capabilities }
-  lspconfig.html.setup{ capabilities = capabilities }
+  local function defaultSetup(server)
+    server.setup({
+        on_attach = lspOnAttach,
+        flags = {
+          debounce_text_changes = 300,
+        },
+        capabilities = capabilities
+    })
+  end
+
+  -- require('ionide').setup({
+  --     on_attach = lspOnAttach,
+  --     capabilities = capabilities,
+  -- })
+lspconfig.fsautocomplete.setup({
+    on_attach = lspOnAttach,
+    capabilities = capabilities,
+})
+
+
+  defaultSetup(lspconfig.jsonls)
+  defaultSetup(lspconfig.elmls)
+  defaultSetup(lspconfig.html)
 
   lspconfig.lua_ls.setup{
+    on_attach = lspOnAttach,
     settings = {
       filetypes = { 'lua' },
       Lua = {
+        hint = { enable = true },
         runtime = { version = 'LuaJIT' },
         diagnostics = { globals = { 'vim' } },
         semantic = { enable = false }, -- Disable semantic highlighting, treesitter is better imo
@@ -111,6 +166,30 @@ function M.setup()
     }
   }
 
+
+  -- Manually refresh codelens for every fsharp buffer
+  -- except the first one opened, as they won't refresh
+  -- on their own
+  FsFirstBuffer = nil
+  vim.api.nvim_create_autocmd({"LspAttach"}, {
+      pattern = { "*.fs" },
+      callback = function(ev)
+        if FsFirstBuffer == nil then
+          FsFirstBuffer = ev.buf
+        end
+      end
+  })
+
+  vim.api.nvim_create_autocmd({"TextChanged", "InsertLeave"}, {
+  -- vim.api.nvim_create_autocmd({"BufWrite"}, {
+      pattern = { "*.fs" },
+      callback = function(ev)
+        -- if ev.buf ~= FsFirstBuffer then
+          vim.lsp.codelens.refresh()
+        -- end
+      end
+  })
+
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
@@ -118,36 +197,6 @@ function M.setup()
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
   vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 
-  -- Use LspAttach autocommand to only map the following keys
-  -- after the language server attaches to the current buffer
-  vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-    callback = function(ev)
-      -- Enable completion triggered by <c-x><c-o>
-      vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-      -- Buffer local mappings.
-      -- See `:help vim.lsp.*` for documentation on any of the below functions
-      local opts = { buffer = ev.buf }
-      vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-      vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-      vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-      vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-      vim.keymap.set('n', '<space>wl', function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      end, opts)
-      vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-      vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-      vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-      vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-      vim.keymap.set('n', '<space>f', function()
-        vim.lsp.buf.format { async = true }
-      end, opts)
-    end,
-  })
 end
 
 return M

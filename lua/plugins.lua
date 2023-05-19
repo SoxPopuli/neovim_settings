@@ -93,9 +93,11 @@ local function packerStartup(use)
         lsp_plugin_names[i] = item[1]:sub(slash_index+1)
     end
 
+    vim.g['fsharp#lsp_auto_setup'] = 0
     use { 'ionide/Ionide-vim' }
 
     use { 'simrat39/inlay-hints.nvim' }
+    -- use { 'lvimuser/lsp-inlayhints.nvim' }
 
     use {
         'hrsh7th/nvim-cmp',
@@ -147,7 +149,7 @@ local function packerStartup(use)
         'junegunn/fzf',
         run = ':call fzf#install()',
         config = function()
-            -- vim.keymap.set('n', '<C-p>', '<cmd>FZF<cr>')
+            vim.keymap.set('n', '<C-l>', '<cmd>FZF<cr>')
             vim.keymap.set('n', '<C-p>', FzfGit)
         end,
     }
