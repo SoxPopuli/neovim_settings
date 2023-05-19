@@ -227,7 +227,6 @@ lspconfig.fsautocomplete.setup({
     end)
   end
 
-
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
