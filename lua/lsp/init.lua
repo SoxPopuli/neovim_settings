@@ -143,8 +143,22 @@ function M.setup()
   --     capabilities = capabilities,
   -- })
 lspconfig.fsautocomplete.setup({
-    on_attach = lspOnAttach,
+    on_attach = function(client, bufnr)
+      lspOnAttach(client, bufnr)
+
+      vim.api.nvim_create_autocmd({"TextChanged", "InsertLeave", "BufEnter", "CursorHold"}, {
+          callback = function(_)
+              vim.lsp.codelens.refresh()
+          end,
+          buffer = bufnr,
+      })
+
+    end,
     capabilities = capabilities,
+    cmd = {
+      vim.fn.stdpath('data') .. '/mason/bin/fsautocomplete',
+      '--adaptive-lsp-server-enabled',
+    }
 })
 
 
@@ -166,29 +180,53 @@ lspconfig.fsautocomplete.setup({
     }
   }
 
+  local codelens = require('vim.lsp.codelens')
+  local old_on_codelens = codelens.on_codelens
 
-  -- Manually refresh codelens for every fsharp buffer
-  -- except the first one opened, as they won't refresh
-  -- on their own
-  FsFirstBuffer = nil
-  vim.api.nvim_create_autocmd({"LspAttach"}, {
-      pattern = { "*.fs" },
-      callback = function(ev)
-        if FsFirstBuffer == nil then
-          FsFirstBuffer = ev.buf
-        end
-      end
-  })
+  local function resolve_lenses(lenses, bufnr, client_id, callback)
+    lenses = lenses or {}
+    local num_lens = vim.tbl_count(lenses)
+    if num_lens == 0 then
+      callback()
+      return
+    end
 
-  vim.api.nvim_create_autocmd({"TextChanged", "InsertLeave"}, {
-  -- vim.api.nvim_create_autocmd({"BufWrite"}, {
-      pattern = { "*.fs" },
-      callback = function(ev)
-        -- if ev.buf ~= FsFirstBuffer then
-          vim.lsp.codelens.refresh()
-        -- end
+    ---@private
+    local function countdown()
+      num_lens = num_lens - 1
+      if num_lens == 0 then
+        callback()
       end
-  })
+    end
+
+    local client = vim.lsp.get_client_by_id(client_id)
+    for _, lens in pairs(lenses or {}) do
+      if lens.command then
+        countdown()
+      else
+        client.request('codeLens/resolve', lens, function(_, result)
+          if result and result.command then
+            lens.command = result.command
+          end
+          countdown()
+        end, bufnr)
+      end
+    end
+  end
+
+  -- Explicitly resolve code lenses before display
+  codelens.on_codelens = function(err, result, ctx, a)
+    if err then
+      old_on_codelens(err, result, ctx, a)
+    end
+
+    resolve_lenses(result, ctx.bufnr, ctx.client_id, function()
+      -- codelens.display(result, ctx.bufnr, ctx.client_id)
+
+      old_on_codelens(err, result, ctx, a)
+    end)
+  end
+
 
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
