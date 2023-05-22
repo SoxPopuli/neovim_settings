@@ -93,8 +93,7 @@ local function packerStartup(use)
         lsp_plugin_names[i] = item[1]:sub(slash_index+1)
     end
 
-    vim.g['fsharp#lsp_auto_setup'] = 0
-    use { 'ionide/Ionide-vim' }
+    --use { 'ionide/Ionide-vim' }
 
     use { 'simrat39/inlay-hints.nvim' }
     -- use { 'lvimuser/lsp-inlayhints.nvim' }
@@ -127,15 +126,23 @@ local function packerStartup(use)
     use { 'scrooloose/NERDTree' }
     -- Auto pairs for '(' '[' '{'
     use {
-        'jiangmiao/auto-pairs',
-        config = function() vim.g.AutoPairsMapCh = 0 end,
+        'windwp/nvim-autopairs',
+        config = function()
+            local rule = require('nvim-autopairs.rule')
+            local npairs = require('nvim-autopairs')
+            local cond = require('nvim-autopairs.conds')
+
+            npairs.setup({
+                disable_in_visualblock = true,
+            })
+        end,
     }
 
     use {
         'junegunn/fzf',
         run = ':call fzf#install()',
         config = function()
-            vim.keymap.set('n', '<C-l>', '<cmd>FZF<cr>')
+            vim.keymap.set('n', '<M-p>', '<cmd>FZF<cr>')
             vim.keymap.set('n', '<C-p>', FzfGit)
         end,
     }

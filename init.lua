@@ -2,6 +2,7 @@ local vim = vim
 vim.cmd([[let mapleader = ","]])
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 
+vim.g['fsharp#lsp_auto_setup'] = 0
 local plugins = require('plugins')
 
 if plugins.CheckPackerExists() == false then

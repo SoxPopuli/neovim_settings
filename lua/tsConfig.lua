@@ -30,6 +30,8 @@ function M.setup()
 	}
 
 	require('nvim-treesitter.configs').setup(setupConfig)
+
+	vim.cmd('hi TSRainbowBlue ctermfg=cyan') -- set blue to cyan for more visibility
 end
 
 

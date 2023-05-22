@@ -138,10 +138,7 @@ function M.setup()
     })
   end
 
-  -- require('ionide').setup({
-  --     on_attach = lspOnAttach,
-  --     capabilities = capabilities,
-  -- })
+--require('ionide').setup({
 lspconfig.fsautocomplete.setup({
     on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
@@ -153,12 +150,13 @@ lspconfig.fsautocomplete.setup({
           buffer = bufnr,
       })
 
+    vim.cmd('hi link LspCodeLens Type')
     end,
     capabilities = capabilities,
-    cmd = {
-      vim.fn.stdpath('data') .. '/mason/bin/fsautocomplete',
-      '--adaptive-lsp-server-enabled',
-    }
+    -- cmd = {
+    --   vim.fn.stdpath('data') .. '/mason/bin/fsautocomplete',
+    --   '--adaptive-lsp-server-enabled',
+    -- }
 })
 
 
