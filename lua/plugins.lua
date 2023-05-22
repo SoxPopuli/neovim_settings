@@ -105,24 +105,10 @@ local function packerStartup(use)
     }
     -- End LSP Plugins
 
+    use { 'mbbill/undotree' }
 
     -- Debugger protocol support
     use { 'mfussenegger/nvim-dap' }
-
-    -- Linting + formatting
-    -- use {
-    --     'jose-elias-alvarez/null-ls.nvim',
-    --     run = function()
-    --         local null_ls = require('null-ls')
-    --         null_ls.setup({
-    --             sources = {
-    --                 null_ls.builtins.formatting.stylua,
-    --                 null_ls.builtins.diagnostics.eslint,
-    --                 null_ls.builtins.completion.spell,
-    --             }
-    --         })
-    --     end
-    -- }
 
     -- use normal easymotion when in VIM mode
     use { 'easymotion/vim-easymotion', config = easymotionConfig }
