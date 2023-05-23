@@ -82,7 +82,7 @@ function LuaSnipConfig()
         if luasnip.jumpable() then
             luasnip.jump(-1)
         else
-            return '<S-Tab>'
+            return '<C-d>'
         end
     end, { expr = true })
 end
@@ -127,9 +127,11 @@ local function packerStartup(use)
     -- use { 'lvimuser/lsp-inlayhints.nvim' }
 
     use { 'hrsh7th/nvim-cmp' }
-    -- End LSP Plugins
+    use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
 
     use { 'mbbill/undotree' }
+
+    use { 'markwoodhall/vim-nuget' } -- NuGet Support
 
     -- Debugger protocol support
     use { 'mfussenegger/nvim-dap' }
