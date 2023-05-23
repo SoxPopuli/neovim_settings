@@ -60,11 +60,37 @@ local function treesitterConfig()
     -- require('tsConfig')
 end
 
+function LuaSnipConfig()
+    local luasnip = require('luasnip')
+    vim.keymap.set('s', '<Tab>', function ()
+        if luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+        else
+            return '<Tab>'
+        end
+    end, { expr = true })
+
+    vim.keymap.set('i', '<Tab>', function ()
+        if luasnip.jumpable() then
+            luasnip.jump(1)
+        else
+            return '<Tab>'
+        end
+    end, { expr = true })
+
+    vim.keymap.set('i', '<S-Tab>', function ()
+        if luasnip.jumpable() then
+            luasnip.jump(-1)
+        else
+            return '<S-Tab>'
+        end
+    end, { expr = true })
+end
+
 local function packerStartup(use)
     local vscode = vim.g.vscode == 1
 
     use 'wbthomason/packer.nvim'
-
     use 'tpope/vim-surround'
     use 'tpope/vim-repeat'
 
@@ -77,8 +103,6 @@ local function packerStartup(use)
         { 'neovim/nvim-lspconfig' },
         { 'williamboman/mason.nvim', run = ':masonupdate' },
         { 'williamboman/mason-lspconfig.nvim' },
-        { 'L3MON4D3/LuaSnip' },
-        { 'saadparwaiz1/cmp_luasnip' },
         { 'hrsh7th/cmp-nvim-lsp' },
         { 'hrsh7th/cmp-buffer' },
         { 'hrsh7th/cmp-path' },
@@ -94,15 +118,15 @@ local function packerStartup(use)
         lsp_plugin_names[i] = item[1]:sub(slash_index+1)
     end
 
+    use { 'L3MON4D3/LuaSnip', config = function() LuaSnipConfig() end }
+    use { 'saadparwaiz1/cmp_luasnip' }
+
     --use { 'ionide/Ionide-vim' }
 
     use { 'simrat39/inlay-hints.nvim' }
     -- use { 'lvimuser/lsp-inlayhints.nvim' }
 
-    use {
-        'hrsh7th/nvim-cmp',
-        config = function() require('lsp').setup() end,
-    }
+    use { 'hrsh7th/nvim-cmp' }
     -- End LSP Plugins
 
     use { 'mbbill/undotree' }
@@ -129,15 +153,21 @@ local function packerStartup(use)
     use {
         'windwp/nvim-autopairs',
         config = function()
-            local rule = require('nvim-autopairs.rule')
             local npairs = require('nvim-autopairs')
-            local cond = require('nvim-autopairs.conds')
-
             npairs.setup({
                 disable_in_visualblock = true,
             })
         end,
     }
+    -- If you want insert `(` after select function or method item
+    if pcall(require, 'nvim-autopairs') then
+        local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+        local cmp = require('cmp')
+        cmp.event:on(
+          'confirm_done',
+          cmp_autopairs.on_confirm_done()
+        )
+    end
 
     use {
         'junegunn/fzf',

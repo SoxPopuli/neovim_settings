@@ -10,6 +10,7 @@ if plugins.CheckPackerExists() == false then
 end
 
 plugins.startup()
+require('lsp').setup()
 
 vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
 
@@ -34,8 +35,8 @@ vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 
 vim.o.expandtab = true
-vim.o.autowrite = true
-vim.o.autowriteall = true
+vim.o.autowrite = false
+vim.o.autowriteall = false
 vim.o.linebreak = true
 vim.o.breakindent = true
 vim.o.smartindent = true

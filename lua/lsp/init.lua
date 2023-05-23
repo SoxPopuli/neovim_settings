@@ -1,5 +1,6 @@
 local M = {}
 local dap = require('lsp.dap')
+local snippets = require('lsp.snippets')
 
 local lspconfig = require('lspconfig')
 local cmp = require('cmp')
@@ -50,7 +51,7 @@ function M.setup()
               ['<C-b>'] = cmp.mapping.scroll_docs(-4),
               ['<C-f>'] = cmp.mapping.scroll_docs(4),
               ['<C-space>'] = cmp.mapping.complete(),
-              ['<C-e>'] = cmp.mapping.abort(),
+              ['<C-c>'] = cmp.mapping.abort(),
               ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item
 
               ['<tab>'] = cmp.mapping.select_next_item(),
@@ -85,6 +86,11 @@ function M.setup()
     })
   })
 
+  -- Setup custom snippets - only once though
+  if SnippetsInit ~= true then
+    snippets.addSnippets()
+    SnippetsInit = true
+  end
 
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -92,7 +98,7 @@ function M.setup()
   -- Setup Installer
   require('mason').setup()
   require('mason-lspconfig').setup({
-      ensure_installed = { 
+      ensure_installed = {
         'lua_ls',
         'rust_analyzer',
         'elmls',
