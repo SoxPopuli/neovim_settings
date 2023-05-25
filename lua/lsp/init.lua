@@ -172,17 +172,46 @@ function M.setup()
       vim.cmd('hi link LspCodeLens Type')
     end,
     capabilities = capabilities,
-    -- cmd = {
-    --   vim.fn.stdpath('data') .. '/mason/bin/fsautocomplete',
-    --   '--adaptive-lsp-server-enabled',
-    -- }
+    settings = {
+      FSharp = {
+        keywordsAutocomplete = false,
+        ExternalAutocomplete = false,
+
+        Linter = true,
+
+        UnionCaseStubGeneration = true,
+        UnionCaseStubGenerationBody = 'failwith "todo"',
+
+        RecordStubGeneration = true,
+        RecordStubGenerationBody = 'failwith "todo"',
+
+        InterfaceStubGeneration = true,
+        InterfaceStubGenerationBody = 'failwith "todo"',
+        InterfaceStubGenerationObjectIdentifier = 'this',
+
+        ResolveNamespaces = true,
+        SimplifyNameAnalyzer = true,
+
+        UnusedOpensAnalyzer = true,
+        UnusedDeclarationsAnalyzer = true,
+      }
+    },
   })
 
+  lspconfig.lemminx.setup({
+    on_attach = lspOnAttach,
+    capabilities = capabilities,
+    settings = {
+      xml = {
+        completion = { autoCloseTags = true },
+        validation = { noGrammar = "ignore" }
+      }
+    },
+  })
 
   defaultSetup(lspconfig.jsonls)
   defaultSetup(lspconfig.elmls)
   defaultSetup(lspconfig.html)
-  defaultSetup(lspconfig.lemminx)
 
   lspconfig.lua_ls.setup {
     on_attach = lspOnAttach,
