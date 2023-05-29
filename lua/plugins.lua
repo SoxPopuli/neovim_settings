@@ -49,12 +49,12 @@ end
 local function treesitterConfig()
     vim.o.foldlevel = 16
 
-    vim.api.nvim_create_autocmd({'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter'}, {
-      group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
-      callback = function()
-        vim.opt.foldmethod     = 'expr'
-        vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
-      end
+    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
+        group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+        callback = function()
+            vim.opt.foldmethod = 'expr'
+            vim.opt.foldexpr   = 'nvim_treesitter#foldexpr()'
+        end
     })
 
     -- require('tsConfig')
@@ -62,7 +62,7 @@ end
 
 function LuaSnipConfig()
     local luasnip = require('luasnip')
-    vim.keymap.set('s', '<Tab>', function ()
+    vim.keymap.set('s', '<Tab>', function()
         if luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
         else
@@ -70,7 +70,7 @@ function LuaSnipConfig()
         end
     end, { expr = true })
 
-    vim.keymap.set('i', '<Tab>', function ()
+    vim.keymap.set('i', '<Tab>', function()
         if luasnip.jumpable() then
             luasnip.jump(1)
         else
@@ -78,7 +78,7 @@ function LuaSnipConfig()
         end
     end, { expr = true })
 
-    vim.keymap.set('i', '<S-Tab>', function ()
+    vim.keymap.set('i', '<S-Tab>', function()
         if luasnip.jumpable() then
             luasnip.jump(-1)
         else
@@ -101,7 +101,7 @@ local function packerStartup(use)
     -- LSP plugins
     local lsp_plugins = {
         { 'neovim/nvim-lspconfig' },
-        { 'williamboman/mason.nvim', run = ':masonupdate' },
+        { 'williamboman/mason.nvim',          run = ':masonupdate' },
         { 'williamboman/mason-lspconfig.nvim' },
         { 'hrsh7th/cmp-nvim-lsp' },
         { 'hrsh7th/cmp-buffer' },
@@ -115,7 +115,7 @@ local function packerStartup(use)
         use(item)
         local slash_index = item[1]:find('/')
 
-        lsp_plugin_names[i] = item[1]:sub(slash_index+1)
+        lsp_plugin_names[i] = item[1]:sub(slash_index + 1)
     end
 
     use { 'L3MON4D3/LuaSnip', config = function() LuaSnipConfig() end }
@@ -147,6 +147,28 @@ local function packerStartup(use)
         config = treesitterConfig,
     }
 
+    -- Outline view: LSP / Treesitter driven
+    use {
+        'stevearc/aerial.nvim',
+        config = function()
+            local aerial = require('aerial')
+            aerial.setup({
+                on_attach = function(bufnr)
+                    vim.keymap.set('n', '}', function() aerial.next(1) end, { buffer = bufnr })
+                    vim.keymap.set('n', '{', function() aerial.prev(1) end, { buffer = bufnr })
+                end,
+                filter_kind = false,
+            })
+
+            vim.keymap.set('n', '<Leader>a', function()
+                aerial.toggle({
+                    focus = true,
+                    direction = "right",
+                })
+            end)
+        end
+    }
+
     -- Better Syntax Support
     use { 'sheerun/vim-polyglot' }
     -- File Explorer
@@ -166,8 +188,8 @@ local function packerStartup(use)
         local cmp_autopairs = require('nvim-autopairs.completion.cmp')
         local cmp = require('cmp')
         cmp.event:on(
-          'confirm_done',
-          cmp_autopairs.on_confirm_done()
+            'confirm_done',
+            cmp_autopairs.on_confirm_done()
         )
     end
 

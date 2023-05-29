@@ -36,13 +36,17 @@ local function lspOnAttach(client, bufnr)
   -- hints.on_attach(client, bufnr)
 end
 
-local function lspDeprioritizeSnippets(entry1, entry2)
-  if entry1:get_kind() == 'Snippet' then
-    return false
-  elseif entry2:get_kind() == 'Snippet' then
-    return true
-  else
-    return nil
+local function MasonInstallList(list)
+  local pack = require('mason-core.package')
+  local registry = require('mason-registry')
+
+  for _, name in pairs(list) do
+    local pkg_name, pkg_ver = pack.Parse(name)
+    local pkg = registry.get_package(pkg_name)
+    if pkg:is_installed() == false then
+      print('Installing ' .. pkg_name)
+      pkg:install({ version = pkg_ver })
+    end
   end
 end
 
@@ -98,6 +102,13 @@ function M.setup()
     })
   })
 
+  -- Global mappings.
+  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+  vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
   -- Setup custom snippets - only once though
   if SnippetsInit ~= true then
     snippets.addSnippets()
@@ -118,7 +129,16 @@ function M.setup()
       'html',
       'lemminx',
       'fsautocomplete',
+      'yamlls',
     }
+  })
+
+  MasonInstallList({
+    -- DAP Providers
+    'netcoredbg',
+
+    -- Linters
+    'fantomas',
   })
 
   rt.setup({
@@ -134,19 +154,6 @@ function M.setup()
     }
   })
 
-  -- vim.api.nvim_create_autocmd({'BufEnter', 'BufWinEnter'}, {
-  --     pattern = '*.rs',
-  --     callback = function() rt.inlay_hints.set() end,
-  -- })
-
-  -- lspconfig.rust_analyzer.setup {
-  --     settings = {
-  --         ['rust-analyzer'] = {},
-  --     },
-  --     capabilities = capabilities,
-  --     on_attach = function() rt.inlay_hints.enable() end,
-  -- }
-
   local function defaultSetup(server)
     server.setup({
       on_attach = lspOnAttach,
@@ -157,7 +164,6 @@ function M.setup()
     })
   end
 
-  --require('ionide').setup({
   lspconfig.fsautocomplete.setup({
     on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
@@ -212,6 +218,7 @@ function M.setup()
   defaultSetup(lspconfig.jsonls)
   defaultSetup(lspconfig.elmls)
   defaultSetup(lspconfig.html)
+  defaultSetup(lspconfig.yamlls)
 
   lspconfig.lua_ls.setup {
     on_attach = lspOnAttach,
@@ -273,13 +280,6 @@ function M.setup()
       old_on_codelens(err, result, ctx, a)
     end)
   end
-
-  -- Global mappings.
-  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-  vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 end
 
 return M

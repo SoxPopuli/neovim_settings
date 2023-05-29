@@ -8,6 +8,21 @@ function M.pathSep()
     end
 end
 
+function M.buildPath(p)
+    local sep = M.pathSep()
+
+    local parts = p or {}
+    local path = parts[1] or ""
+    local len = #parts
+    local i = 2
+
+    while i <= len do
+        path = path .. sep .. parts[i]
+        i = i + 1
+    end
+    return path
+end
+
 function M.getArgs(fn)
     local args = {}
     local hook = debug.gethook()
