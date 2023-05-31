@@ -1,6 +1,7 @@
 local vim = vim
 vim.cmd([[let mapleader = ","]])
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
+vim.o.termguicolors = 1 -- Enable full color support
 
 vim.g['fsharp#lsp_auto_setup'] = 0
 local plugins = require('plugins')
@@ -19,7 +20,10 @@ if vim.g.vscode == nil then
     -- plugins.treesitterConfig()
 
 
-    vim.cmd.colorscheme("dracula")
+    -- vim.cmd.colorscheme("dracula")
+    vim.cmd.colorscheme("catppuccin-mocha")
+
+
     vim.cmd.packadd("termdebug")
     vim.go.termdebug_wide = 1
 
@@ -56,11 +60,11 @@ vim.o.mouse = "nv"
 -- Keybinds
 
 vim.keymap.set('n', '<F1>', '<Cmd>:nohl<CR>')
-vim.keymap.set({'n', 'i', 'c'}, '<F2>', [[<Cmd>:set list! | set list?<CR>]])
+vim.keymap.set({ 'n', 'i', 'c' }, '<F2>', [[<Cmd>:set list! | set list?<CR>]])
 vim.keymap.set('n', '<A-z>', [[:set wrap! | set wrap?<CR>]])
 
-vim.keymap.set({'i', 'c'}, '<C-BS>', '<C-w>', { remap = true })
-vim.keymap.set({'i', 'c'}, '<C-h>', '<C-w>', { remap = true })
+vim.keymap.set({ 'i', 'c' }, '<C-BS>', '<C-w>', { remap = true })
+vim.keymap.set({ 'i', 'c' }, '<C-h>', '<C-w>', { remap = true })
 
 -- Escape terminal input with esc
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
@@ -69,7 +73,7 @@ vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
 vim.keymap.set('i', '<C-z>', '<cmd>:undo<cr>')
 
 -- Ctrl-S save
-vim.keymap.set({'n', 'i'}, '<C-s>', '<cmd>:w<cr>')
+vim.keymap.set({ 'n', 'i' }, '<C-s>', '<cmd>:w<cr>')
 
 -- Alt window switch
 vim.keymap.set('n', '<A-Up>', '<C-w><Up>', { remap = true })
@@ -83,3 +87,10 @@ vim.keymap.set('n', '<A-l>', '<C-w>l')
 
 vim.keymap.set('i', '<C-l>', '::')
 vim.keymap.set('i', '<S-Tab>', '<C-d>')
+
+-- autocommands
+vim.api.nvim_create_autocmd("FileType", {
+    -- Close Quickfix window on selection
+    pattern = { 'qf' },
+    command = [[nnoremap <buffer> <cr> <cr>:cclose<cr>]]
+})

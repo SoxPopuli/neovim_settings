@@ -1,5 +1,7 @@
 local plugins = {}
 
+AutopairsConfigSet = false
+
 local configPath = vim.fn.stdpath('config')
 local dataPath = vim.fn.stdpath('data')
 
@@ -30,6 +32,20 @@ local function treesitterUpdate()
     tsUpdate()
 end
 
+local function treesitterConfig()
+    vim.o.foldlevel = 16
+
+    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
+        group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+        callback = function()
+            vim.opt.foldmethod = 'expr'
+            vim.opt.foldexpr   = 'nvim_treesitter#foldexpr()'
+        end
+    })
+
+    -- require('tsConfig')
+end
+
 function FzfGit()
     local hasGitIgnore = vim.fn.glob('.gitignore') ~= ""
 
@@ -46,18 +62,47 @@ function FzfGit()
     })
 end
 
-local function treesitterConfig()
-    vim.o.foldlevel = 16
+function AutopairsConfig(npairs)
+    --local has_npairs, npairs               = pcall(require, 'nvim-autopairs')
+    local has_cmp_autopairs, cmp_autopairs = pcall(require, 'nvim-autopairs.completion.cmp')
+    local has_cmp, cmp                     = pcall(require, 'cmp')
+    local has_Rule, Rule                   = pcall(require, 'nvim-autopairs.rule')
+    local has_cond, cond                   = pcall(require, 'nvim-autopairs.conds')
 
-    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
-        group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
-        callback = function()
-            vim.opt.foldmethod = 'expr'
-            vim.opt.foldexpr   = 'nvim_treesitter#foldexpr()'
-        end
-    })
+    if not (has_cmp_autopairs and has_cmp and has_Rule and has_cond) then
+        return
+    end
 
-    -- require('tsConfig')
+    cmp.event:on(
+        'confirm_done',
+        cmp_autopairs.on_confirm_done()
+    )
+
+    local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
+
+    -- Add space between brackets
+    local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
+    npairs.add_rules {
+        Rule(' ', ' ')
+            :with_pair(function(opts)
+                local pair = opts.line:sub(opts.col - 1, opts.col)
+                return vim.tbl_contains({
+                    brackets[1][1] .. brackets[1][2],
+                    brackets[2][1] .. brackets[2][2],
+                    brackets[3][1] .. brackets[3][2],
+                }, pair)
+            end)
+    }
+    for _, bracket in pairs(brackets) do
+        npairs.add_rules {
+            Rule(bracket[1] .. ' ', ' ' .. bracket[2])
+                :with_pair(function() return false end)
+                :with_move(function(opts)
+                    return opts.prev_char:match('.%' .. bracket[2]) ~= nil
+                end)
+                :use_key(bracket[2])
+        }
+    end
 end
 
 function LuaSnipConfig()
@@ -97,6 +142,7 @@ local function packerStartup(use)
     use { 'preservim/nerdcommenter' }
 
     use { 'dracula/vim', as = 'dracula' }
+    use { 'catppuccin/nvim', as = 'catppuccin' }
 
     -- LSP plugins
     local lsp_plugins = {
@@ -180,18 +226,16 @@ local function packerStartup(use)
             local npairs = require('nvim-autopairs')
             npairs.setup({
                 disable_in_visualblock = true,
+                fast_wrap = {},
             })
+
+            if not AutopairsConfigSet then
+                AutopairsConfig(npairs)
+                AutopairsConfigSet = true
+            end
         end,
     }
     -- If you want insert `(` after select function or method item
-    if pcall(require, 'nvim-autopairs') then
-        local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-        local cmp = require('cmp')
-        cmp.event:on(
-            'confirm_done',
-            cmp_autopairs.on_confirm_done()
-        )
-    end
 
     use {
         'junegunn/fzf',

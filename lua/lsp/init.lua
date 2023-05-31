@@ -31,7 +31,6 @@ local function lspOnAttach(client, bufnr)
   vim.keymap.set('n', '<space>f', function()
     vim.lsp.buf.format { async = true }
   end, opts)
-
   -- hints.setup()
   -- hints.on_attach(client, bufnr)
 end
