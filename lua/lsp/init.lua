@@ -49,8 +49,7 @@ local function MasonInstallList(list)
   end
 end
 
-function M.setup()
-  local comp = cmp.config.compare
+local function setupCmp()
   cmp.setup({
     snippet = {
       expand = function(args)
@@ -100,13 +99,94 @@ function M.setup()
       { name = 'cmdline' }
     })
   })
+end
 
+local function setupKeys()
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
   vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
   vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+end
+
+local function codelensFix()
+  local codelens = require('vim.lsp.codelens')
+  local old_on_codelens = codelens.on_codelens
+
+  local function resolve_lenses(lenses, bufnr, client_id, callback)
+    lenses = lenses or {}
+    local num_lens = vim.tbl_count(lenses)
+    if num_lens == 0 then
+      callback()
+      return
+    end
+
+    ---@private
+    local function countdown()
+      num_lens = num_lens - 1
+      if num_lens == 0 then
+        callback()
+      end
+    end
+
+    local client = vim.lsp.get_client_by_id(client_id)
+    for _, lens in pairs(lenses or {}) do
+      if lens.command then
+        countdown()
+      else
+        client.request('codeLens/resolve', lens, function(_, result)
+          if result and result.command then
+            lens.command = result.command
+          end
+          countdown()
+        end, bufnr)
+      end
+    end
+  end
+
+  -- Explicitly resolve code lenses before display
+  return function(err, result, ctx, a)
+    if err then
+      old_on_codelens(err, result, ctx, a)
+      return
+    end
+
+    resolve_lenses(result, ctx.bufnr, ctx.client_id, function()
+      old_on_codelens(err, result, ctx, a)
+    end)
+  end
+end
+
+-- Scala LSP
+local function setupScala(capabilities)
+  local metals_config = require('metals').bare_config()
+  metals_config.settings = {
+    showImplicitArguments = true,
+    excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+  }
+  metals_config.capabilities = capabilities
+  metals_config.on_attach = function(_, _)
+    require('metals').setup_dap()
+  end
+
+  -- Autocmd that will actually be in charging of starting the whole thing
+  local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+  vim.api.nvim_create_autocmd("FileType", {
+    -- NOTE: You may or may not want java included here. You will need it if you
+    -- want basic Java support but it may also conflict if you are using
+    -- something like nvim-jdtls which also works on a java filetype autocmd.
+    pattern = { "scala", "sbt", "java" },
+    callback = function()
+      require("metals").initialize_or_attach(metals_config)
+    end,
+    group = nvim_metals_group,
+  })
+end
+
+function M.setup()
+  setupCmp()
+  setupKeys()
 
   -- Setup custom snippets - only once though
   if SnippetsInit ~= true then
@@ -181,22 +261,16 @@ function M.setup()
       FSharp = {
         keywordsAutocomplete = false,
         ExternalAutocomplete = false,
-
         Linter = true,
-
         UnionCaseStubGeneration = true,
         UnionCaseStubGenerationBody = 'failwith "todo"',
-
         RecordStubGeneration = true,
         RecordStubGenerationBody = 'failwith "todo"',
-
         InterfaceStubGeneration = true,
         InterfaceStubGenerationBody = 'failwith "todo"',
         InterfaceStubGenerationObjectIdentifier = 'this',
-
         ResolveNamespaces = true,
         SimplifyNameAnalyzer = true,
-
         UnusedOpensAnalyzer = true,
         UnusedDeclarationsAnalyzer = true,
       }
@@ -233,52 +307,12 @@ function M.setup()
     }
   }
 
-  local codelens = require('vim.lsp.codelens')
-  local old_on_codelens = codelens.on_codelens
+  setupScala(capabilities)
 
-  local function resolve_lenses(lenses, bufnr, client_id, callback)
-    lenses = lenses or {}
-    local num_lens = vim.tbl_count(lenses)
-    if num_lens == 0 then
-      callback()
-      return
-    end
+  require('vim.lsp.codelens').on_codelens = codelensFix()
 
-    ---@private
-    local function countdown()
-      num_lens = num_lens - 1
-      if num_lens == 0 then
-        callback()
-      end
-    end
-
-    local client = vim.lsp.get_client_by_id(client_id)
-    for _, lens in pairs(lenses or {}) do
-      if lens.command then
-        countdown()
-      else
-        client.request('codeLens/resolve', lens, function(_, result)
-          if result and result.command then
-            lens.command = result.command
-          end
-          countdown()
-        end, bufnr)
-      end
-    end
-  end
-
-  -- Explicitly resolve code lenses before display
-  codelens.on_codelens = function(err, result, ctx, a)
-    if err then
-      old_on_codelens(err, result, ctx, a)
-    end
-
-    resolve_lenses(result, ctx.bufnr, ctx.client_id, function()
-      -- codelens.display(result, ctx.bufnr, ctx.client_id)
-
-      old_on_codelens(err, result, ctx, a)
-    end)
-  end
+  dap.config()
+  dap.bindKeys()
 end
 
 return M

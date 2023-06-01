@@ -14,6 +14,8 @@ function M.setup()
 		'latex',
 		'markdown',
 		'regex',
+		'scala',
+		'yaml',
 		},
 
 		sync_install = true,

@@ -78,8 +78,6 @@ function AutopairsConfig(npairs)
         cmp_autopairs.on_confirm_done()
     )
 
-    local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
-
     -- Add space between brackets
     local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
     npairs.add_rules {
@@ -144,6 +142,8 @@ local function packerStartup(use)
     use { 'dracula/vim', as = 'dracula' }
     use { 'catppuccin/nvim', as = 'catppuccin' }
 
+    use { 'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" } }
+
     -- LSP plugins
     local lsp_plugins = {
         { 'neovim/nvim-lspconfig' },
@@ -175,7 +175,13 @@ local function packerStartup(use)
     use { 'hrsh7th/nvim-cmp' }
     use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
 
-    use { 'mbbill/undotree' }
+    use { 'mbbill/undotree',
+        config = function()
+            vim.keymap.set('n', '<leader>u', function()
+                vim.cmd.UndotreeToggle()
+            end)
+        end
+    }
 
     use { 'markwoodhall/vim-nuget' } -- NuGet Support
 
@@ -203,7 +209,7 @@ local function packerStartup(use)
                     vim.keymap.set('n', '}', function() aerial.next(1) end, { buffer = bufnr })
                     vim.keymap.set('n', '{', function() aerial.prev(1) end, { buffer = bufnr })
                 end,
-                filter_kind = false,
+                --filter_kind = false,
             })
 
             vim.keymap.set('n', '<Leader>a', function()
