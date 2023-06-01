@@ -268,7 +268,14 @@ local function packerStartup(use)
 end
 
 function plugins.startup()
-    require('packer').startup(packerStartup)
+    require('packer').startup({
+        packerStartup,
+        config = {
+            display = {
+                open_fn = require('packer.util').float,
+            }
+        }
+    })
 end
 
 return plugins
