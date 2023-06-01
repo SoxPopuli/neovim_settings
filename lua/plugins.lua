@@ -133,6 +133,28 @@ end
 local function packerStartup(use)
     local vscode = vim.g.vscode == 1
 
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+        config = function()
+            require('lualine').setup({
+                options = {
+                    theme = 'auto',
+                    icons_enabled = false,
+                    section_separators = {
+                        left = ' ',
+                        right = ' ',
+                    },
+                    component_separators = {
+                        left = '│',
+                        right = '│',
+                    },
+                }
+            })
+        end
+    }
+
+
     use 'wbthomason/packer.nvim'
     use 'tpope/vim-surround'
     use 'tpope/vim-repeat'
