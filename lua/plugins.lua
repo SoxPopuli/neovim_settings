@@ -186,6 +186,9 @@ function NvimTreeConfig()
             api.tree.open()
         end
     end)
+    vim.keymap.set('n', '<leader>c', function ()
+        api.tree.close()
+    end)
 end
 
 local function packerStartup(use)
