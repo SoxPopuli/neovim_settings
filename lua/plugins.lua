@@ -186,7 +186,7 @@ function NvimTreeConfig()
             api.tree.open()
         end
     end)
-    vim.keymap.set('n', '<leader>c', function ()
+    vim.keymap.set('n', '<leader>x', function ()
         api.tree.close()
     end)
 end
