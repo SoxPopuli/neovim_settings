@@ -93,5 +93,5 @@ vim.keymap.set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 vim.api.nvim_create_autocmd("FileType", {
     -- Close Quickfix window on selection
     pattern = { 'qf' },
-    command = [[nnoremap <buffer> <cr> <cr>:cclose<cr>]]
+    command = [[nnoremap <buffer> <cr> <cr>:lclose<cr>]]
 })

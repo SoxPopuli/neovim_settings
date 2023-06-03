@@ -320,11 +320,7 @@ local function packerStartup(use)
                 disable_in_visualblock = true,
                 fast_wrap = {},
             })
-
-            if not AutopairsConfigSet then
-                AutopairsConfig(npairs)
-                AutopairsConfigSet = true
-            end
+            AutopairsConfig(npairs)
         end,
     }
     -- If you want insert `(` after select function or method item
