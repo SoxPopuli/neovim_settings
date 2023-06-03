@@ -130,6 +130,64 @@ function LuaSnipConfig()
     end, { expr = true })
 end
 
+function NvimTreeConfig()
+    require('nvim-tree').setup({
+        sort_by = 'case_sensitive',
+        renderer = {
+            group_empty = true,
+            icons = {
+                webdev_colors = true,
+                git_placement = "before",
+                modified_placement = "after",
+                padding = " ",
+                symlink_arrow = " ➛ ",
+                show = {
+                    file = true,
+                    folder = true,
+                    folder_arrow = true,
+                    git = true,
+                    modified = true,
+                },
+                glyphs = {
+                    default = "■",
+                    symlink = "□",
+                    bookmark = "▣",
+                    modified = "●",
+                    folder = {
+                        arrow_closed = "→",
+                        arrow_open = "↓",
+                        default = "▶",
+                        open = "▼",
+                        empty = "▷",
+                        empty_open = "▽",
+                        symlink = "▶",
+                        symlink_open = "▼",
+                    },
+                    git = {
+                        unstaged = "✗",
+                        staged = "✓",
+                        unmerged = "",
+                        renamed = "➜",
+                        untracked = "★",
+                        deleted = "␣",
+                        ignored = "◌",
+                    },
+                },
+            },
+        },
+    })
+
+    local api = require('nvim-tree.api')
+    vim.keymap.set('n', '<leader>z', function ()
+        --Open tree if not focused, close if focused
+        if vim.bo.filetype == 'NvimTree' then
+            api.tree.close()
+        else 
+            api.tree.open()
+        end
+    end)
+end
+
 local function packerStartup(use)
     local vscode = vim.g.vscode == 1
 
@@ -245,7 +303,11 @@ local function packerStartup(use)
     -- Better Syntax Support
     use { 'sheerun/vim-polyglot' }
     -- File Explorer
-    use { 'scrooloose/NERDTree' }
+    use {
+        'nvim-tree/nvim-tree.lua',
+        config = NvimTreeConfig()
+    }
+
     -- Auto pairs for '(' '[' '{'
     use {
         'windwp/nvim-autopairs',

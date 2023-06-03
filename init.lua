@@ -1,4 +1,3 @@
-local vim = vim
 vim.cmd([[let mapleader = ","]])
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 vim.o.termguicolors = 1 -- Enable full color support
