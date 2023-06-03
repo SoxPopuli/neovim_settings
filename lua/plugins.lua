@@ -131,7 +131,14 @@ function LuaSnipConfig()
 end
 
 function NvimTreeConfig()
-    require('nvim-tree').setup({
+    local has_tree, tree = pcall(require, 'nvim-tree')
+    local has_api, api = pcall(require, 'nvim-tree.api')
+
+    if not (has_tree and has_api) then
+        return
+    end
+
+    tree.setup({
         sort_by = 'case_sensitive',
         renderer = {
             group_empty = true,
@@ -177,16 +184,15 @@ function NvimTreeConfig()
         },
     })
 
-    local api = require('nvim-tree.api')
-    vim.keymap.set('n', '<leader>z', function ()
+    vim.keymap.set('n', '<leader>z', function()
         --Open tree if not focused, close if focused
         if vim.bo.filetype == 'NvimTree' then
             api.tree.close()
-        else 
+        else
             api.tree.open()
         end
     end)
-    vim.keymap.set('n', '<leader>x', function ()
+    vim.keymap.set('n', '<leader>x', function()
         api.tree.close()
     end)
 end

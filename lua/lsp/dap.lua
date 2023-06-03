@@ -1,8 +1,12 @@
 local M = {}
-local dap = require('dap')
-local misc = require('misc')
+local has_dap, dap = pcall(require, 'dap')
+local has_misc, misc = pcall(require, 'misc')
 
 function M.bindKeys()
+    if not (has_dap and has_misc) then
+        return
+    end
+
     vim.keymap.set('n', '<F5>', function() dap.continue() end)
     vim.keymap.set('n', '<F10>', function() dap.step_over() end)
     vim.keymap.set('n', '<F11>', function() dap.step_into() end)
