@@ -149,13 +149,13 @@ function NvimTreeConfig()
                     modified = true,
                 },
                 glyphs = {
-                    default = "■",
-                    symlink = "□",
+                    default = "◆",
+                    symlink = "◇",
                     bookmark = "▣",
                     modified = "●",
                     folder = {
-                        arrow_closed = "→",
-                        arrow_open = "↓",
+                        arrow_closed = " ",
+                        arrow_open = " ",
                         default = "▶",
                         open = "▼",
                         empty = "▷",
