@@ -73,10 +73,13 @@ function AutopairsConfig(npairs)
         return
     end
 
-    cmp.event:on(
-        'confirm_done',
-        cmp_autopairs.on_confirm_done()
-    )
+    if not AutopairsConfigSet then
+        cmp.event:on(
+            'confirm_done',
+            cmp_autopairs.on_confirm_done()
+        )
+        AutopairsConfigSet = true
+    end
 
     -- Add space between brackets
     local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
@@ -320,6 +323,7 @@ local function packerStartup(use)
     -- Auto pairs for '(' '[' '{'
     use {
         'windwp/nvim-autopairs',
+        requires = 'hrsh7th/nvim-cmp',
         config = function()
             local npairs = require('nvim-autopairs')
             npairs.setup({

@@ -2,25 +2,18 @@ vim.cmd([[let mapleader = ","]])
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 vim.o.termguicolors = 1 -- Enable full color support
 
-vim.g['fsharp#lsp_auto_setup'] = 0
-local plugins = require('plugins')
+if vim.go.loadplugins then
+    vim.g['fsharp#lsp_auto_setup'] = 0
+    vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
 
-if plugins.CheckPackerExists() == false then
-    plugins.InstallPacker()
-end
+    local plugins = require('plugins')
 
-plugins.startup()
-require('lsp').setup()
+    if plugins.CheckPackerExists() == false then
+        plugins.InstallPacker()
+    end
 
-vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
-
-if vim.g.vscode == nil then
-    -- plugins.treesitterUpdate()
-    -- plugins.treesitterConfig()
-
-
-    -- vim.cmd.colorscheme("dracula")
-    vim.cmd.colorscheme("catppuccin-mocha")
+    plugins.startup()
+    require('lsp').setup()
 
 
     vim.cmd.packadd("termdebug")
@@ -29,6 +22,8 @@ if vim.g.vscode == nil then
     local treesitter = require('tsConfig')
     treesitter.setup()
 end
+vim.cmd.colorscheme("catppuccin-mocha")
+
 
 vim.o.path = vim.o.path .. "**"
 -- vim.o.lcs = vim.o.lcs .. "space:."
