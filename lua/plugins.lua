@@ -274,7 +274,7 @@ local function packerStartup(use)
         end
     }
 
-    use { 'markwoodhall/vim-nuget' } -- NuGet Support
+    use { 'tpope/vim-fugitive' }
 
     -- Debugger protocol support
     use { 'mfussenegger/nvim-dap' }
