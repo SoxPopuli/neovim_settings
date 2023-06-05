@@ -56,6 +56,16 @@ function M.addSnippets()
         match {} with
         | {} -> {}
         ]], { i(1, 'cond'), i(2, 'case'), i(3, '()') })),
+
+        s('mem', fmt([[
+        member {} {} = 
+            {}
+        ]], { i(1, 'fn'), i(2, '()'), i(3, 'failwith "todo"') })),
+
+        s('smem', fmt([[
+        static member {} {} = 
+            {}
+        ]], { i(1, 'fn'), i(2, '()'), i(3, 'failwith "todo"') })),
     })
 end
 
