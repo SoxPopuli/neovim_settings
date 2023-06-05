@@ -274,7 +274,12 @@ local function packerStartup(use)
         end
     }
 
-    use { 'tpope/vim-fugitive' }
+    use {
+        'tpope/vim-fugitive',
+        config = function()
+            vim.keymap.set('n', '<leader>g', function() vim.cmd.Git() end)
+        end
+    }
 
     -- Debugger protocol support
     use { 'mfussenegger/nvim-dap' }
