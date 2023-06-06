@@ -206,9 +206,11 @@ function M.setup()
       'elmls',
       'jsonls',
       'html',
+      'cssls',
       'lemminx',
       'fsautocomplete',
       'yamlls',
+      'marksman',
     }
   })
 
@@ -219,6 +221,23 @@ function M.setup()
     -- Linters
     'fantomas',
   })
+
+  local function defaultSetup(server)
+    server.setup({
+      on_attach = lspOnAttach,
+      flags = {
+        debounce_text_changes = 300,
+      },
+      capabilities = capabilities
+    })
+  end
+
+  defaultSetup(lspconfig.jsonls)
+  defaultSetup(lspconfig.elmls)
+  defaultSetup(lspconfig.html)
+  defaultSetup(lspconfig.cssls)
+  defaultSetup(lspconfig.yamlls)
+  defaultSetup(lspconfig.marksman)
 
   rt.setup({
     server = {
@@ -232,16 +251,6 @@ function M.setup()
       end
     }
   })
-
-  local function defaultSetup(server)
-    server.setup({
-      on_attach = lspOnAttach,
-      flags = {
-        debounce_text_changes = 300,
-      },
-      capabilities = capabilities
-    })
-  end
 
   lspconfig.fsautocomplete.setup({
     on_attach = function(client, bufnr)
@@ -287,11 +296,6 @@ function M.setup()
       }
     },
   })
-
-  defaultSetup(lspconfig.jsonls)
-  defaultSetup(lspconfig.elmls)
-  defaultSetup(lspconfig.html)
-  defaultSetup(lspconfig.yamlls)
 
   lspconfig.lua_ls.setup {
     on_attach = lspOnAttach,
