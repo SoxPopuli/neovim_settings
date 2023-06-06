@@ -88,5 +88,20 @@ vim.keymap.set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 vim.api.nvim_create_autocmd("FileType", {
     -- Close Quickfix window on selection
     pattern = { 'qf' },
-    command = [[nnoremap <buffer> <cr> <cr>:lclose<cr>]]
+    -- command = [[nnoremap <buffer><nowait><silent> <Space> <cr>:lclose:cclose<cr>]]
+    callback = function()
+        vim.keymap.set('n', '<Space>', function()
+            local isLocList =
+                vim.fn.getwininfo(vim.fn.win_getid())[1].loclist == 1
+            local lnum = vim.fn.line('.')
+
+            if isLocList then
+                vim.cmd('ll ' .. lnum)
+                vim.cmd.lclose()
+            else
+                vim.cmd('cc ' .. lnum)
+                vim.cmd.cclose()
+            end
+        end, { buffer = true, nowait = true, silent = true })
+    end
 })
