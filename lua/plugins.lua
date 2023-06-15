@@ -223,6 +223,13 @@ local function packerStartup(use)
         end
     }
 
+    use {
+        'j-hui/fidget.nvim',
+        branch = 'legacy',
+        config = function()
+            require('fidget').setup({})
+        end
+    }
 
     use 'wbthomason/packer.nvim'
     use 'tpope/vim-surround'
