@@ -1,5 +1,8 @@
 local plugins = {}
 
+local priv = {}
+plugins.priv = plugins
+
 AutopairsConfigSet = false
 
 local configPath = vim.fn.stdpath('config')
@@ -23,10 +26,6 @@ function plugins.InstallPacker()
     vim.cmd([[packadd packer.nvim]])
 end
 
-local function easymotionConfig()
-    vim.keymap.set('n', '<Leader>', '<plug>(easymotion-prefix)', { remap = true })
-end
-
 local function treesitterUpdate()
     local tsUpdate = require('nvim-treesitter.install').update({ with_sync = true })
     tsUpdate()
@@ -44,6 +43,60 @@ local function treesitterConfig()
     })
 
     -- require('tsConfig')
+end
+
+function priv.HopConfig()
+    local hop = require('hop')
+    hop.setup({ keys = 'etovxqpdygfblzhckisuran' })
+
+    local directions = require('hop.hint').HintDirection
+    vim.keymap.set('n', '<leader>f',
+        function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end,
+        { remap = false })
+    vim.keymap.set('n', '<leader>F',
+        function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end,
+        { remap = false })
+    vim.keymap.set('n', '<leader>t',
+        function()
+            hop.hint_char1({
+                direction = directions.AFTER_CURSOR,
+                current_line_only = true,
+                hint_offset = -1
+            })
+        end, { remap = false })
+    vim.keymap.set('n', '<leader>T',
+        function()
+            hop.hint_char1({
+                direction = directions.BEFORE_CURSOR,
+                current_line_only = true,
+                hint_offset = 1
+            })
+        end, { remap = false })
+
+    vim.keymap.set('n', '<leader>s',
+        function() hop.hint_char1({ direction = nil, current_line_only = false }) end, { remap = false })
+    vim.keymap.set('n', '<leader><leader>f', function()
+        hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false }, { remap = false })
+    end)
+    vim.keymap.set('n', '<leader><leader>F', function()
+        hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false }, { remap = false })
+    end)
+    vim.keymap.set('n', '<leader><leader>t',
+        function()
+            hop.hint_char1({
+                direction = directions.AFTER_CURSOR,
+                current_line_only = false,
+                hint_offset = -1
+            })
+        end, { remap = false })
+    vim.keymap.set('n', '<leader><leader>T',
+        function()
+            hop.hint_char1({
+                direction = directions.BEFORE_CURSOR,
+                current_line_only = false,
+                hint_offset = 1
+            })
+        end, { remap = false })
 end
 
 function FzfGit()
@@ -106,7 +159,7 @@ function AutopairsConfig(npairs)
     end
 end
 
-function LuaSnipConfig()
+function priv.LuaSnipConfig()
     local luasnip = require('luasnip')
     vim.keymap.set('s', '<Tab>', function()
         if luasnip.expand_or_jumpable() then
@@ -133,7 +186,7 @@ function LuaSnipConfig()
     end, { expr = true })
 end
 
-function NvimTreeConfig()
+function priv.NvimTreeConfig()
     local has_tree, tree = pcall(require, 'nvim-tree')
     local has_api, api = pcall(require, 'nvim-tree.api')
 
@@ -262,7 +315,7 @@ local function packerStartup(use)
         lsp_plugin_names[i] = item[1]:sub(slash_index + 1)
     end
 
-    use { 'L3MON4D3/LuaSnip', config = function() LuaSnipConfig() end }
+    use { 'L3MON4D3/LuaSnip', config = priv.LuaSnipConfig() }
     use { 'saadparwaiz1/cmp_luasnip' }
 
     --use { 'ionide/Ionide-vim' }
@@ -291,8 +344,11 @@ local function packerStartup(use)
     -- Debugger protocol support
     use { 'mfussenegger/nvim-dap' }
 
-    -- use normal easymotion when in VIM mode
-    use { 'easymotion/vim-easymotion', config = easymotionConfig }
+    use {
+        'phaazon/hop.nvim',
+        branch = 'v2',
+        config = priv.HopConfig()
+    }
 
     -- Treesitter
     use { 'HiPhish/nvim-ts-rainbow2' }
@@ -329,7 +385,7 @@ local function packerStartup(use)
     -- File Explorer
     use {
         'nvim-tree/nvim-tree.lua',
-        config = NvimTreeConfig()
+        config = priv.NvimTreeConfig()
     }
 
     -- Auto pairs for '(' '[' '{'

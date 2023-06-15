@@ -86,7 +86,7 @@ vim.keymap.set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 
 -- Clipboard convenience
 vim.keymap.set('n', '<Space>y', '"+y')
-vim.keymap.set('n', '<Space><S-p>', '"+p')
+vim.keymap.set('n', '<Space>p', '"+p')
 vim.keymap.set('n', '<Space><S-p>', '"+P')
 
 -- Maximize window
