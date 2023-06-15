@@ -347,7 +347,7 @@ local function packerStartup(use)
     use {
         'phaazon/hop.nvim',
         branch = 'v2',
-        config = priv.HopConfig()
+        config = priv.HopConfig
     }
 
     -- Treesitter
@@ -412,14 +412,30 @@ local function packerStartup(use)
         end,
     }
 
-    -- VSCode easy motion
-    -- use {
-    --     'asvetliakov/vim-easymotion',
-    --     as = 'vsc-easymotion',
-    --     config = easymotionConfig,
-    --     cond = vscode,
-    --     disable = not vscode,
-    -- }
+    -- tmux integration
+    use {
+        'aserowy/tmux.nvim',
+        config = function()
+            local tmux = require('tmux')
+            local res = tmux.setup({
+                copy_sync = { enable = false },
+                navigation = { enable_default_keybindings = false },
+                resize = { enable_default_keybindings = false }
+            })
+
+            vim.keymap.set('n', '<A-h>', function() tmux.move_left() end, { remap = false })
+            vim.keymap.set('n', '<A-j>', function() tmux.move_bottom() end, { remap = false })
+            vim.keymap.set('n', '<A-k>', function() tmux.move_top() end, { remap = false })
+            vim.keymap.set('n', '<A-l>', function() tmux.move_right() end, { remap = false })
+
+            vim.keymap.set('n', '<C-h>', function() tmux.resize_left() end, { remap = false })
+            vim.keymap.set('n', '<C-j>', function() tmux.resize_bottom() end, { remap = false })
+            vim.keymap.set('n', '<C-k>', function() tmux.resize_top() end, { remap = false })
+            vim.keymap.set('n', '<C-l>', function() tmux.resize_right() end, { remap = false })
+
+            return res
+        end
+    }
 
     -- Keep at end - downloads updates
     if plugins.CheckPackerExists() then

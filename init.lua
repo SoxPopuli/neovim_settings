@@ -95,6 +95,8 @@ vim.keymap.set('n', '<C-w>m', function()
     vim.api.nvim_win_set_width(0, 9999)
 end)
 
+vim.keymap.set('n', '<C-w>x', '<cmd>:q<cr>')
+
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
     -- Close Quickfix window on selection
