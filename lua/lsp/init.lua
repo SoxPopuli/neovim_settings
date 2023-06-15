@@ -211,6 +211,7 @@ function M.setup()
       'fsautocomplete',
       'yamlls',
       'marksman',
+      'tsserver',
     }
   })
 
@@ -238,6 +239,7 @@ function M.setup()
   defaultSetup(lspconfig.cssls)
   defaultSetup(lspconfig.yamlls)
   defaultSetup(lspconfig.marksman)
+  defaultSetup(lspconfig.tsserver)
 
   rt.setup({
     server = {
