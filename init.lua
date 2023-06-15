@@ -84,9 +84,16 @@ vim.keymap.set('i', '<S-Tab>', '<C-d>')
 
 vim.keymap.set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 
+-- Clipboard convenience
 vim.keymap.set('n', '<Space>y', '"+y')
 vim.keymap.set('n', '<Space><S-p>', '"+p')
 vim.keymap.set('n', '<Space><S-p>', '"+P')
+
+-- Maximize window
+vim.keymap.set('n', '<C-w>m', function()
+    vim.api.nvim_win_set_height(0, 9999)
+    vim.api.nvim_win_set_width(0, 9999)
+end)
 
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
