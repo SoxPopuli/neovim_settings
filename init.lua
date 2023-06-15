@@ -84,6 +84,10 @@ vim.keymap.set('i', '<S-Tab>', '<C-d>')
 
 vim.keymap.set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 
+vim.keymap.set('n', '<Space>y', '"+y')
+vim.keymap.set('n', '<Space><S-p>', '"+p')
+vim.keymap.set('n', '<Space><S-p>', '"+P')
+
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
     -- Close Quickfix window on selection
