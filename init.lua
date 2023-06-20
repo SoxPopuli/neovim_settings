@@ -51,6 +51,8 @@ vim.o.relativenumber = true
 
 vim.o.mouse = "nv"
 
+vim.o.cursorline = true
+
 -- Keybinds
 
 vim.keymap.set('n', '<F1>', '<Cmd>:nohl<CR>')
