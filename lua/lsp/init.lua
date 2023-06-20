@@ -221,6 +221,8 @@ function M.setup()
 
     -- Linters
     'fantomas',
+    'prettier',
+    'stylua',
   })
 
   local function defaultSetup(server)
