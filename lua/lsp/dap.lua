@@ -1,11 +1,17 @@
 local M = {}
 local has_dap, dap = pcall(require, 'dap')
 local has_misc, misc = pcall(require, 'misc')
+local has_dapui, dapui = pcall(require, 'dapui')
 
 function M.bindKeys()
-    if not (has_dap and has_misc) then
+    if not (has_dap and has_misc and has_dapui) then
         return
     end
+    dapui.setup()
+
+    vim.keymap.set('n', '<leader>do', function() dapui.open() end)
+    vim.keymap.set('n', '<leader>dc', function() dapui.close() end)
+    vim.keymap.set('n', '<leader>dt', function() dapui.toggle() end)
 
     vim.keymap.set('n', '<F5>', function() dap.continue() end)
     vim.keymap.set('n', '<F10>', function() dap.step_over() end)
@@ -42,7 +48,8 @@ function M.config()
 
     dap.adapters.coreclr = {
         type = 'executable',
-        command = misc.buildPath({ dotnetPrefix, 'netcoredbg' })
+        command = misc.buildPath({ dotnetPrefix, 'netcoredbg' }),
+        args = { '--interpreter=vscode' },
     }
 
     local dotnetConfig = {
@@ -50,6 +57,16 @@ function M.config()
             type = 'coreclr',
             name = 'launch - netcoredbg',
             request = 'launch',
+            program = function()
+                local items = vim.fn.globpath(vim.fn.getcwd(), '**/*.dll', false, true)
+                local indexed = {}
+                for i = 1, #items do
+                    indexed[i] = i .. ': ' .. items[i]
+                end
+
+                local choice = vim.fn.inputlist(indexed)
+                return items[choice]
+            end
         }
     }
 

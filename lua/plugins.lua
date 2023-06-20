@@ -343,6 +343,7 @@ local function packerStartup(use)
 
     -- Debugger protocol support
     use { 'mfussenegger/nvim-dap' }
+    use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } }
 
     use {
         'phaazon/hop.nvim',
