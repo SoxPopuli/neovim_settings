@@ -275,7 +275,9 @@ local function packerStartup(use)
 		"j-hui/fidget.nvim",
 		branch = "legacy",
 		config = function()
-			require("fidget").setup({})
+			require("fidget").setup({
+				text = { spinner = "bouncing_ball" }
+			})
 		end,
 	})
 
@@ -293,7 +295,7 @@ local function packerStartup(use)
 	-- LSP plugins
 	local lsp_plugins = {
 		{ "neovim/nvim-lspconfig" },
-		{ "williamboman/mason.nvim", run = ":masonupdate" },
+		{ "williamboman/mason.nvim",          run = ":masonupdate" },
 		{ "williamboman/mason-lspconfig.nvim" },
 		{ "hrsh7th/cmp-nvim-lsp" },
 		{ "hrsh7th/cmp-buffer" },
@@ -313,7 +315,15 @@ local function packerStartup(use)
 	use({ "L3MON4D3/LuaSnip", config = priv.LuaSnipConfig() })
 	use({ "saadparwaiz1/cmp_luasnip" })
 
-	--use { 'ionide/Ionide-vim' }
+	use {
+		'ionide/Ionide-vim',
+		config = function()
+			vim.g['fsharp#backend'] = 'disable'
+			vim.g['fsharp#lsp_auto_setup'] = 0
+			vim.g['fsharp#lsp_codelens'] = 0
+			vim.g['fsharp#use_recommended_server_config'] = 0
+		end
+	}
 
 	use({ "simrat39/inlay-hints.nvim" })
 	-- use { 'lvimuser/lsp-inlayhints.nvim' }
@@ -355,6 +365,10 @@ local function packerStartup(use)
 		"nvim-treesitter/nvim-treesitter",
 		run = treesitterUpdate,
 		config = treesitterConfig,
+	})
+
+	use({
+		'~/Code/lua/fsharp-tools.nvim'
 	})
 
 	-- Outline view: LSP / Treesitter driven

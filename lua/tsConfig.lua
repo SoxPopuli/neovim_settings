@@ -40,7 +40,11 @@ function M.setup()
 		rainbow = {
 			enable = true,
 			query = 'rainbow-parens',
-			strategy = rainbow.strategy.global
+			strategy = {
+				rainbow.strategy.global,
+
+				fsharp = rainbow.strategy["local"],
+			}
 		}
 	}
 

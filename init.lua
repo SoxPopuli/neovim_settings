@@ -3,7 +3,6 @@ vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 vim.o.termguicolors = 1 -- Enable full color support
 
 if vim.go.loadplugins then
-    vim.g['fsharp#lsp_auto_setup'] = 0
     vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
 
     local plugins = require('plugins')
