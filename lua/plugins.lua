@@ -364,10 +364,10 @@ local function packerStartup(use)
 			local aerial = require("aerial")
 			aerial.setup({
 				on_attach = function(bufnr)
-					vim.keymap.set("n", "<C-]>", function()
+					vim.keymap.set("n", "<space>n", function()
 						aerial.next(1)
 					end, { buffer = bufnr, nowait = true })
-					vim.keymap.set("n", "<C-[>", function()
+					vim.keymap.set("n", "<space>p", function()
 						aerial.prev(1)
 					end, { buffer = bufnr, nowait = true })
 				end,
