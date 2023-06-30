@@ -25,7 +25,7 @@ vim.cmd.colorscheme("catppuccin-mocha")
 
 
 vim.o.path = vim.o.path .. "**"
--- vim.o.lcs = vim.o.lcs .. "space:."
+vim.o.listchars = vim.o.listchars .. ",space:·"
 
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
