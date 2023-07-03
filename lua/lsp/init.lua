@@ -7,6 +7,28 @@ local cmp = require('cmp')
 local rt = require('rust-tools')
 local hints = require('inlay-hints')
 
+local function apply_formatting(bufnr)
+  vim.lsp.buf.format({
+    filter = function(client)
+      -- Apply formatting logic here
+      local filetypes = {
+        typescript = "tsserver",
+        fsharp = "null-ls",
+      }
+
+      local ft = vim.bo.filetype
+      -- Use formatter for filetype if specified, else use any formatter available
+      if filetypes[ft] ~= nil then
+        return filetypes[ft] == client.name
+      else
+        return true
+      end
+    end,
+    bufnr = bufnr,
+    async = true,
+  })
+end
+
 local function lspOnAttach(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -30,7 +52,7 @@ local function lspOnAttach(client, bufnr)
   vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   vim.keymap.set('n', '<space>f', function()
-    vim.lsp.buf.format { async = true }
+    apply_formatting(bufnr)
   end, opts)
   -- hints.setup()
   -- hints.on_attach(client, bufnr)
