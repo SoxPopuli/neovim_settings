@@ -248,6 +248,17 @@ function M.setup()
     'stylua',
   })
 
+  local function setupCodelensRefresh(bufnr)
+    vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter", "CursorHold" }, {
+      callback = function(_)
+        vim.lsp.codelens.refresh()
+      end,
+      buffer = bufnr,
+    })
+
+    vim.cmd('hi link LspCodeLens Type')
+  end
+
   local function defaultSetup(server)
     server.setup({
       on_attach = lspOnAttach,
@@ -266,6 +277,19 @@ function M.setup()
   defaultSetup(lspconfig.marksman)
   defaultSetup(lspconfig.tsserver)
 
+  lspconfig.ocamllsp.setup({
+    on_attach = function (client, bufnr)
+      lspOnAttach(client, bufnr)
+      setupCodelensRefresh(bufnr)
+    end,
+    capabilities = capabilities,
+    get_language_id = function(_, ftype) return ftype end,
+    settings = {
+      extendedHover = { enable = true },
+      codelens = { enable = true },
+    }
+  })
+
   rt.setup({
     server = {
       on_attach = function(client, bufnr)
@@ -282,15 +306,7 @@ function M.setup()
   lspconfig.fsautocomplete.setup({
     on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
-
-      vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter", "CursorHold" }, {
-        callback = function(_)
-          vim.lsp.codelens.refresh()
-        end,
-        buffer = bufnr,
-      })
-
-      vim.cmd('hi link LspCodeLens Type')
+      setupCodelensRefresh(bufnr)
     end,
     capabilities = capabilities,
     settings = {
@@ -342,6 +358,10 @@ function M.setup()
 
   require('vim.lsp.codelens').on_codelens = codelensFix()
 
+  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+    vim.lsp.handlers.hover,
+    { border = "rounded" }
+  )
   dap.config()
   dap.bindKeys()
 end

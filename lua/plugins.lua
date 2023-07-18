@@ -251,25 +251,7 @@ end
 local function packerStartup(use)
 	local vscode = vim.g.vscode == 1
 
-	use({
-		"nvim-lualine/lualine.nvim",
-		config = function()
-			require("lualine").setup({
-				options = {
-					theme = "auto",
-					icons_enabled = false,
-					section_separators = {
-						left = " ",
-						right = " ",
-					},
-					component_separators = {
-						left = "│",
-						right = "│",
-					},
-				},
-			})
-		end,
-	})
+	use({ "nvim-lualine/lualine.nvim" })
 
 	use({
 		"j-hui/fidget.nvim",
@@ -293,7 +275,7 @@ local function packerStartup(use)
 	use({ "scalameta/nvim-metals", requires = { "nvim-lua/plenary.nvim" } })
 
 	-- LSP plugins
-	local lsp_plugins = {
+	use {
 		{ "neovim/nvim-lspconfig" },
 		{ "williamboman/mason.nvim",          run = ":masonupdate" },
 		{ "williamboman/mason-lspconfig.nvim" },
@@ -303,14 +285,6 @@ local function packerStartup(use)
 		{ "hrsh7th/cmp-cmdline" },
 		{ "simrat39/rust-tools.nvim" },
 	}
-	local lsp_plugin_names = {}
-
-	for i, item in ipairs(lsp_plugins) do
-		use(item)
-		local slash_index = item[1]:find("/")
-
-		lsp_plugin_names[i] = item[1]:sub(slash_index + 1)
-	end
 
 	use({ "L3MON4D3/LuaSnip", config = priv.LuaSnipConfig() })
 	use({ "saadparwaiz1/cmp_luasnip" })
@@ -378,10 +352,10 @@ local function packerStartup(use)
 			local aerial = require("aerial")
 			aerial.setup({
 				on_attach = function(bufnr)
-					vim.keymap.set("n", "<space>n", function()
+					vim.keymap.set("n", "<M-n>", function()
 						aerial.next(1)
 					end, { buffer = bufnr, nowait = true })
-					vim.keymap.set("n", "<space>p", function()
+					vim.keymap.set("n", "<M-b>", function()
 						aerial.prev(1)
 					end, { buffer = bufnr, nowait = true })
 				end,
@@ -430,45 +404,7 @@ local function packerStartup(use)
 	})
 
 	-- tmux integration
-	use({
-		"aserowy/tmux.nvim",
-		config = function()
-			local tmux = require("tmux")
-			local res = tmux.setup({
-				copy_sync = { enable = false },
-				navigation = { enable_default_keybindings = false },
-				resize = { enable_default_keybindings = false },
-			})
-
-			vim.keymap.set("n", "<A-h>", function()
-				tmux.move_left()
-			end, { remap = false })
-			vim.keymap.set("n", "<A-j>", function()
-				tmux.move_bottom()
-			end, { remap = false })
-			vim.keymap.set("n", "<A-k>", function()
-				tmux.move_top()
-			end, { remap = false })
-			vim.keymap.set("n", "<A-l>", function()
-				tmux.move_right()
-			end, { remap = false })
-
-			vim.keymap.set("n", "<C-h>", function()
-				tmux.resize_left()
-			end, { remap = false })
-			vim.keymap.set("n", "<C-j>", function()
-				tmux.resize_bottom()
-			end, { remap = false })
-			vim.keymap.set("n", "<C-k>", function()
-				tmux.resize_top()
-			end, { remap = false })
-			vim.keymap.set("n", "<C-l>", function()
-				tmux.resize_right()
-			end, { remap = false })
-
-			return res
-		end,
-	})
+	use({ "aserowy/tmux.nvim" })
 
 	use({
 		"jose-elias-alvarez/null-ls.nvim",
