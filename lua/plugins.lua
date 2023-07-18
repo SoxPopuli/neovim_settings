@@ -45,57 +45,6 @@ local function treesitterConfig()
 	-- require('tsConfig')
 end
 
-function priv.HopConfig()
-	local hop = require("hop")
-	hop.setup({ keys = "etovxqpdygfblzhckisuran" })
-
-	local directions = require("hop.hint").HintDirection
-	vim.keymap.set("n", "<leader>f", function()
-		hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
-	end, { remap = false })
-	vim.keymap.set("n", "<leader>F", function()
-		hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
-	end, { remap = false })
-	vim.keymap.set("n", "<leader>t", function()
-		hop.hint_char1({
-			direction = directions.AFTER_CURSOR,
-			current_line_only = true,
-			hint_offset = -1,
-		})
-	end, { remap = false })
-	vim.keymap.set("n", "<leader>T", function()
-		hop.hint_char1({
-			direction = directions.BEFORE_CURSOR,
-			current_line_only = true,
-			hint_offset = 1,
-		})
-	end, { remap = false })
-
-	vim.keymap.set("n", "<leader>s", function()
-		hop.hint_char1({ direction = nil, current_line_only = false })
-	end, { remap = false })
-	vim.keymap.set("n", "<leader><leader>f", function()
-		hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false }, { remap = false })
-	end)
-	vim.keymap.set("n", "<leader><leader>F", function()
-		hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false }, { remap = false })
-	end)
-	vim.keymap.set("n", "<leader><leader>t", function()
-		hop.hint_char1({
-			direction = directions.AFTER_CURSOR,
-			current_line_only = false,
-			hint_offset = -1,
-		})
-	end, { remap = false })
-	vim.keymap.set("n", "<leader><leader>T", function()
-		hop.hint_char1({
-			direction = directions.BEFORE_CURSOR,
-			current_line_only = false,
-			hint_offset = 1,
-		})
-	end, { remap = false })
-end
-
 function FzfGit()
 	local hasGitIgnore = vim.fn.glob(".gitignore") ~= ""
 
@@ -326,12 +275,6 @@ local function packerStartup(use)
 	-- Debugger protocol support
 	use({ "mfussenegger/nvim-dap" })
 	use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
-
-	use({
-		"phaazon/hop.nvim",
-		branch = "v2",
-		config = priv.HopConfig,
-	})
 
 	-- Treesitter
 	use({ "HiPhish/nvim-ts-rainbow2" })
