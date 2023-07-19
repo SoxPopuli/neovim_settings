@@ -284,9 +284,7 @@ local function packerStartup(use)
 		config = treesitterConfig,
 	})
 
-	use({
-		'~/Code/lua/fsharp-tools.nvim'
-	})
+	use({ '~/Code/lua/fsharp-tools.nvim' })
 
 	-- Outline view: LSP / Treesitter driven
 	use({
