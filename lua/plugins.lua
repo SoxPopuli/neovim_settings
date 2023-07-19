@@ -284,7 +284,7 @@ local function packerStartup(use)
 		config = treesitterConfig,
 	})
 
-	use({ '~/Code/lua/fsharp-tools.nvim' })
+	use({ 'SoxPopuli/fsharp-tools.nvim' })
 
 	-- Outline view: LSP / Treesitter driven
 	use({
@@ -389,6 +389,11 @@ local function packerStartup(use)
 			vim.keymap.set('n', '<leader>il', function() vim.cmd('IndentBlanklineToggle') end)
 			vim.keymap.set('n', '<leader>ir', function() vim.cmd('IndentBlanklineRefresh') end)
 		end
+	})
+
+	use({
+		'ldelossa/gh.nvim',
+		requires = { { 'ldelossa/litee.nvim' } }
 	})
 
 	-- Keep at end - downloads updates
