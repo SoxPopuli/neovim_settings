@@ -98,6 +98,13 @@ end)
 
 vim.keymap.set('n', '<C-w>x', '<cmd>:q<cr>')
 
+-- Move binds
+vim.keymap.set('i', '<A-k>', '<cmd>:m .-2<cr><C-o>==', { remap = false, silent = true })
+vim.keymap.set('i', '<A-j>', '<cmd>:m .+1<cr><C-o>==', { remap = false, silent = true })
+
+vim.keymap.set('v', '<A-j>', [[:m '>+1<cr>gv=gv]], { remap = false, silent = true })
+vim.keymap.set('v', '<A-k>', [[:m '<-2<cr>gv=gv]], { remap = false, silent = true })
+
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
     -- Close Quickfix window on selection
