@@ -17,9 +17,6 @@ if vim.go.loadplugins then
 
     vim.cmd.packadd("termdebug")
     vim.go.termdebug_wide = 1
-
-    local treesitter = require('tsConfig')
-    treesitter.setup()
 end
 vim.cmd.colorscheme("catppuccin-mocha")
 
