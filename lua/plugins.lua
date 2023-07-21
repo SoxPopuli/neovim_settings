@@ -124,6 +124,10 @@ function priv.NvimTreeConfig()
 
 	tree.setup({
 		sort_by = "case_sensitive",
+		hijack_unnamed_buffer_when_opening = false,
+		hijack_directories = {
+			auto_open = false,
+		},
 		renderer = {
 			group_empty = true,
 			icons = {

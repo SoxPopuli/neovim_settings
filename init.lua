@@ -20,7 +20,6 @@ if vim.go.loadplugins then
 end
 vim.cmd.colorscheme("catppuccin-mocha")
 
-
 vim.o.path = vim.o.path .. "**"
 vim.o.listchars = vim.o.listchars .. ",space:·"
 

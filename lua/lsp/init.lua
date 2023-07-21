@@ -29,6 +29,23 @@ local function apply_formatting(bufnr)
   })
 end
 
+local function setupKeys()
+  -- Global mappings.
+  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+
+  local has_telescope, builtins = pcall(require, 'telescope.builtin')
+  if has_telescope then
+    vim.keymap.set('n', '<space>q', function ()
+      builtins.diagnostics()
+    end)
+  else
+    vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+  end
+end
+
 local function lspOnAttach(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -37,23 +54,44 @@ local function lspOnAttach(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   local opts = { buffer = bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-  vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, opts)
-  -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
   vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
   vim.keymap.set('n', '<space>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, opts)
-  vim.keymap.set('n', '<space>wq', vim.lsp.buf.workspace_symbol, opts)
-  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
   vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   vim.keymap.set('n', '<space>f', function()
     apply_formatting(bufnr)
   end, opts)
+
+  local functions = {}
+  local has_telescope, builtins = pcall(require, 'telescope.builtin')
+  if has_telescope then
+    functions = {
+      implementation = builtins.lsp_implementations,
+      symbols = builtins.lsp_dynamic_workspace_symbols,
+      definitions = builtins.lsp_definitions,
+      type_definitions = builtins.lsp_type_definitions,
+      references = builtins.lsp_references,
+    }
+  else
+    functions = {
+      implementation = vim.lsp.buf.implementation,
+      symbols = vim.lsp.buf.workspace_symbol,
+      definitions = vim.lsp.buf.definition,
+      type_definitions = vim.lsp.buf.type_definition,
+      references = vim.lsp.buf.references,
+    }
+  end
+  vim.keymap.set('n', 'gI', functions.implementation, opts)
+  vim.keymap.set('n', '<space>wq', functions.symbols, opts)
+  vim.keymap.set('n', 'gd', functions.definitions, opts)
+  vim.keymap.set('n', '<space>D', functions.type_definitions, opts)
+  vim.keymap.set('n', 'gr', functions.references, opts)
+
+  -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
   -- hints.setup()
   -- hints.on_attach(client, bufnr)
 end
@@ -122,15 +160,6 @@ local function setupCmp()
       { name = 'cmdline' }
     })
   })
-end
-
-local function setupKeys()
-  -- Global mappings.
-  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-  vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 end
 
 local function codelensFix()
@@ -278,7 +307,7 @@ function M.setup()
   defaultSetup(lspconfig.tsserver)
 
   lspconfig.ocamllsp.setup({
-    on_attach = function (client, bufnr)
+    on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
       setupCodelensRefresh(bufnr)
     end,

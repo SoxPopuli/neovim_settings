@@ -2,6 +2,16 @@ local telescope = require('telescope')
 local telescope_config = require("telescope.config")
 local actions = require('telescope.actions')
 local action_layout = require("telescope.actions.layout")
+local builtins = require('telescope.builtin')
+local previewers = require('telescope.previewers')
+local putils = require("telescope.previewers.utils")
+local pfiletype = require("plenary.filetype")
+
+require("telescope").setup {
+  defaults = {
+    buffer_previewer_maker = new_maker,
+  }
+}
 
 -- Clone the default Telescope configuration
 local vimgrep_arguments = { unpack(telescope_config.values.vimgrep_arguments) }
@@ -12,10 +22,24 @@ table.insert(vimgrep_arguments, "--hidden")
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!**/.git/*")
 
+local new_maker = function(filepath, bufnr, opts)
+  opts = opts or {}
+
+  -- Force fsharp highlighting for .fs files
+  if filepath:find([[.+%.fs$]]) ~= nil then
+    local ft = 'fsharp'
+    opts.use_ft_detect = false
+    putils.regex_highlighter(bufnr, ft)
+  end
+
+  previewers.buffer_previewer_maker(filepath, bufnr, opts)
+end
+
 telescope.setup {
   defaults = {
     -- Default configuration for telescope goes here:
     -- config_key = value,
+    buffer_previewer_maker = new_maker,
     vimgrep_arguments = vimgrep_arguments,
     mappings = {
       n = {
@@ -53,15 +77,28 @@ telescope.setup {
   }
 }
 
+local function is_git_dir()
+  vim.fn.system('git rev-parse --is-inside-work-tree')
+  return vim.v.shell_error == 0
+end
+
+GIT_DIR = is_git_dir()
+
 local function project_files()
   local opts = {} -- define here if you want to define something
-  vim.fn.system('git rev-parse --is-inside-work-tree')
-  if vim.v.shell_error == 0 then
-    require "telescope.builtin".git_files(opts)
+  if GIT_DIR then
+    builtins.git_files(opts)
   else
-    require "telescope.builtin".find_files(opts)
+    builtins.find_files(opts)
   end
 end
 
 vim.keymap.set('n', '<C-p>', function() project_files() end)
-
+vim.keymap.set('n', '<A-p>', function() builtins.find_files() end)
+vim.keymap.set('n', '<A-g>', function() builtins.live_grep() end) -- requires ripgrep
+vim.keymap.set('n', '<leader>tb', function() builtins.buffers() end)
+vim.keymap.set('n', '<leader>th', function() builtins.help_tags() end)
+vim.keymap.set('n', '<leader>tr', function() builtins.reloader() end)
+vim.keymap.set('n', '<leader>tt', function() builtins.treesitter() end)
+vim.keymap.set('n', '<leader>tg', function() builtins.git_branches() end)
+vim.keymap.set('n', '<space>s', function() builtins.spell_suggest() end)
