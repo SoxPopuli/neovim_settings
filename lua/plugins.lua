@@ -45,22 +45,6 @@ local function treesitterConfig()
 	-- require('tsConfig')
 end
 
-function FzfGit()
-	local hasGitIgnore = vim.fn.glob(".gitignore") ~= ""
-
-	local srcCmd = nil -- nil command uses default file search
-	if hasGitIgnore then
-		srcCmd = "git ls-files"
-	end
-
-	local windowSize = { width = 0.9, height = 0.6 }
-	vim.call("fzf#run", {
-		source = srcCmd,
-		sink = "e",
-		window = windowSize,
-	})
-end
-
 function AutopairsConfig(npairs)
 	--local has_npairs, npairs               = pcall(require, 'nvim-autopairs')
 	local has_cmp_autopairs, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
@@ -335,15 +319,6 @@ local function packerStartup(use)
 	})
 	-- If you want insert `(` after select function or method item
 
-	use({
-		"junegunn/fzf",
-		run = ":call fzf#install()",
-		config = function()
-			vim.keymap.set("n", "<M-p>", "<cmd>FZF<cr>")
-			vim.keymap.set("n", "<C-p>", FzfGit)
-		end,
-	})
-
 	-- tmux integration
 	use({ "aserowy/tmux.nvim" })
 
@@ -395,6 +370,14 @@ local function packerStartup(use)
 		'ldelossa/gh.nvim',
 		requires = { { 'ldelossa/litee.nvim' } }
 	})
+
+
+	use {
+		'nvim-telescope/telescope.nvim',
+		-- tag = '0.1.2',
+		branch = '0.1.x',
+		requires = { { 'nvim-lua/plenary.nvim' } }
+	}
 
 	-- Keep at end - downloads updates
 	if plugins.CheckPackerExists() then
