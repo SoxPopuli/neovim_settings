@@ -1,11 +1,11 @@
 local telescope = require('telescope')
 local telescope_config = require("telescope.config")
-local actions = require('telescope.actions')
+-- local actions = require('telescope.actions')
 local action_layout = require("telescope.actions.layout")
 local builtins = require('telescope.builtin')
 local previewers = require('telescope.previewers')
 local putils = require("telescope.previewers.utils")
-local pfiletype = require("plenary.filetype")
+-- local pfiletype = require("plenary.filetype")
 
 require("telescope").setup {
   defaults = {
@@ -96,7 +96,8 @@ end
 vim.keymap.set('n', '<C-p>', function() project_files() end)
 vim.keymap.set('n', '<A-p>', function() builtins.find_files() end)
 vim.keymap.set('n', '<A-g>', function() builtins.live_grep() end) -- requires ripgrep
-vim.keymap.set('n', '<leader>tb', function() builtins.buffers() end)
+vim.keymap.set('n', '<leader>r', function() builtins.resume() end, { desc = "Resume Telescope" })
+vim.keymap.set('n', '<leader>tb', function() builtins.buffers() end, { desc = "Search buffers" })
 vim.keymap.set('n', '<leader>th', function() builtins.help_tags() end)
 vim.keymap.set('n', '<leader>tr', function() builtins.reloader() end)
 vim.keymap.set('n', '<leader>tt', function() builtins.treesitter() end)
