@@ -101,6 +101,26 @@ vim.keymap.set('i', '<A-j>', '<cmd>:m .+1<cr><C-o>==', { remap = false, silent =
 vim.keymap.set('v', '<A-j>', [[:m '>+1<cr>gv=gv]], { remap = false, silent = true })
 vim.keymap.set('v', '<A-k>', [[:m '<-2<cr>gv=gv]], { remap = false, silent = true })
 
+-- Create scratch buffer
+ScratchCount = 0
+vim.api.nvim_create_user_command('Scratch', function (args)
+    local old_splitright = vim.o.splitright
+    vim.o.splitright = true
+    vim.cmd('vertical split')
+    vim.o.splitright = old_splitright
+
+    local buf = vim.api.nvim_create_buf(true, true)
+
+    local name = args.args
+    if name == nil then
+        ScratchCount = ScratchCount + 1
+        vim.api.nvim_buf_set_name(buf, 'Scratch ' .. ScratchCount)
+    else
+        vim.api.nvim_buf_set_name(buf, name)
+    end
+    vim.cmd('b ' .. buf)
+end, { desc = "Create temporary scratch buffer", nargs = '?' })
+
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {
     -- Close Quickfix window on selection

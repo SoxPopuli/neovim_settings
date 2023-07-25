@@ -122,11 +122,18 @@ function priv.NvimTreeConfig()
 		return
 	end
 
+	vim.g.loaded_netrw = 1
+	vim.g.loaded_netrwPlugin = 1
+
 	tree.setup({
 		sort_by = "case_sensitive",
-		hijack_unnamed_buffer_when_opening = false,
+		hijack_netrw = true,
+		hijack_unnamed_buffer_when_opening = true,
 		hijack_directories = {
 			auto_open = false,
+		},
+		diagnostics = {
+			enable = true,
 		},
 		renderer = {
 			group_empty = true,
