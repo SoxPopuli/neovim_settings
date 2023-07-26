@@ -87,6 +87,8 @@ local function project_files()
   end
 end
 
+telescope.load_extension('ui-select')
+
 vim.keymap.set('n', '<C-p>', function() project_files() end)
 vim.keymap.set('n', '<A-p>', function() builtins.find_files() end)
 vim.keymap.set('n', '<A-g>', function() builtins.live_grep() end) -- requires ripgrep

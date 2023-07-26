@@ -7,7 +7,8 @@ parser_config.fsharp = {
 		branch = "develop",
 		files = { "src/scanner.cc", "src/parser.c" },
 		generate_requires_npm = true,
-		requires_generate_from_grammar = true },
+		requires_generate_from_grammar = true
+	},
 	filetype = "fsharp",
 }
 
@@ -25,6 +26,9 @@ local setupConfig = {
 		'regex',
 		'scala',
 		'yaml',
+		'ocaml',
+		'ocaml_interface',
+		'ocamllex',
 	},
 
 	sync_install = false,

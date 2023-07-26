@@ -1,6 +1,7 @@
 local M = {}
 local dap = require('lsp.dap')
 local snippets = require('lsp.snippets')
+local codelens = require('lsp.codelens')
 
 local lspconfig = require('lspconfig')
 local cmp = require('cmp')
@@ -38,7 +39,7 @@ local function setupKeys()
 
   local has_telescope, builtins = pcall(require, 'telescope.builtin')
   if has_telescope then
-    vim.keymap.set('n', '<space>q', function ()
+    vim.keymap.set('n', '<space>q', function()
       builtins.diagnostics()
     end)
   else
@@ -162,54 +163,6 @@ local function setupCmp()
   })
 end
 
-local function codelensFix()
-  local codelens = require('vim.lsp.codelens')
-  local old_on_codelens = codelens.on_codelens
-
-  local function resolve_lenses(lenses, bufnr, client_id, callback)
-    lenses = lenses or {}
-    local num_lens = vim.tbl_count(lenses)
-    if num_lens == 0 then
-      callback()
-      return
-    end
-
-    ---@private
-    local function countdown()
-      num_lens = num_lens - 1
-      if num_lens == 0 then
-        callback()
-      end
-    end
-
-    local client = vim.lsp.get_client_by_id(client_id)
-    for _, lens in pairs(lenses or {}) do
-      if lens.command then
-        countdown()
-      else
-        client.request('codeLens/resolve', lens, function(_, result)
-          if result and result.command then
-            lens.command = result.command
-          end
-          countdown()
-        end, bufnr)
-      end
-    end
-  end
-
-  -- Explicitly resolve code lenses before display
-  return function(err, result, ctx, a)
-    if err then
-      old_on_codelens(err, result, ctx, a)
-      return
-    end
-
-    resolve_lenses(result, ctx.bufnr, ctx.client_id, function()
-      old_on_codelens(err, result, ctx, a)
-    end)
-  end
-end
-
 -- Scala LSP
 local function setupScala(capabilities)
   local metals_config = require('metals').bare_config()
@@ -277,17 +230,6 @@ function M.setup()
     'stylua',
   })
 
-  local function setupCodelensRefresh(bufnr)
-    vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter", "CursorHold" }, {
-      callback = function(_)
-        vim.lsp.codelens.refresh()
-      end,
-      buffer = bufnr,
-    })
-
-    vim.cmd('hi link LspCodeLens Type')
-  end
-
   local function defaultSetup(server)
     server.setup({
       on_attach = lspOnAttach,
@@ -309,7 +251,7 @@ function M.setup()
   lspconfig.ocamllsp.setup({
     on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
-      setupCodelensRefresh(bufnr)
+      codelens.setup_codelens_refresh(bufnr)
     end,
     capabilities = capabilities,
     get_language_id = function(_, ftype) return ftype end,
@@ -335,7 +277,7 @@ function M.setup()
   lspconfig.fsautocomplete.setup({
     on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
-      setupCodelensRefresh(bufnr)
+      codelens.setup_codelens_refresh(bufnr)
     end,
     capabilities = capabilities,
     settings = {
@@ -385,8 +327,6 @@ function M.setup()
 
   setupScala(capabilities)
 
-  require('vim.lsp.codelens').on_codelens = codelensFix()
-
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
     vim.lsp.handlers.hover,
     { border = "rounded" }
@@ -394,5 +334,8 @@ function M.setup()
   dap.config()
   dap.bindKeys()
 end
+
+require('vim.lsp.codelens').on_codelens =
+    codelens.codelens_fix()
 
 return M

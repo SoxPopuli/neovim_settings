@@ -112,7 +112,7 @@ vim.api.nvim_create_user_command('Scratch', function (args)
     local buf = vim.api.nvim_create_buf(true, true)
 
     local name = args.args
-    if name == nil then
+    if name:len() == 0 then
         ScratchCount = ScratchCount + 1
         vim.api.nvim_buf_set_name(buf, 'Scratch ' .. ScratchCount)
     else

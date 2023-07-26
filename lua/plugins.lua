@@ -390,6 +390,8 @@ local function packerStartup(use)
 		requires = { { 'nvim-lua/plenary.nvim' } }
 	}
 
+	use({ 'nvim-telescope/telescope-ui-select.nvim', requires = { 'nvim-telescope/telescope.nvim' } })
+
 	-- Keep at end - downloads updates
 	if plugins.CheckPackerExists() then
 		require("packer").sync()
