@@ -11,3 +11,6 @@ if has_tools then
         fs_tools.edit_file_order({ float = false })
     end, { buffer = bufnr })
 end
+
+vim.bo.shiftwidth = 4
+vim.cmd.compiler('dotnet')

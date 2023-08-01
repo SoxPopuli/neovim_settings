@@ -399,6 +399,8 @@ local function packerStartup(use)
 
 	use({ 'nvim-telescope/telescope-ui-select.nvim', requires = { 'nvim-telescope/telescope.nvim' } })
 
+	use({ 'stevearc/oil.nvim', tag = 'stable' }) -- File Explorer
+
 	-- Keep at end - downloads updates
 	if plugins.CheckPackerExists() then
 		require("packer").sync()

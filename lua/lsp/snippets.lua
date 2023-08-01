@@ -31,9 +31,12 @@ local k = require("luasnip.nodes.key_indexer").new_key
 -- 
 
 function M.addSnippets()
-    ls.add_snippets("all", {
-        s("stirng", t("string")),
-        s("Stirng", t("String")),
+    ls.add_snippets("ocaml", {
+        s('module', fmt([[
+        module {} = struct
+            {}
+        end
+        ]], { i(1, 'Name'), i(2, '') })),
     })
 
     ls.add_snippets("fsharp", {
