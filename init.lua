@@ -49,61 +49,83 @@ vim.o.mouse = "nv"
 vim.o.cursorline = true
 
 -- Keybinds
+local set = vim.keymap.set
 
-vim.keymap.set('n', '<F1>', '<Cmd>:nohl<CR>')
-vim.keymap.set({ 'n', 'i', 'c' }, '<F2>', [[<Cmd>:set list! | set list?<CR>]])
-vim.keymap.set('n', '<A-z>', [[:set wrap! | set wrap?<CR>]])
+set('n', '<F1>', '<Cmd>:nohl<CR>')
+set({ 'n', 'i', 'c' }, '<F2>', [[<Cmd>:set list! | set list?<CR>]])
+set('n', '<A-z>', [[:set wrap! | set wrap?<CR>]])
 
-vim.keymap.set({ 'i', 'c' }, '<C-BS>', '<C-w>', { remap = true })
-vim.keymap.set({ 'i', 'c' }, '<C-h>', '<C-w>', { remap = true })
+set({ 'i', 'c' }, '<C-BS>', '<C-w>', { remap = true })
+set({ 'i', 'c' }, '<C-h>', '<C-w>', { remap = true })
 
 -- Escape terminal input with esc
-vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+set('t', '<Esc>', '<C-\\><C-n>')
 
 -- Ctrl-Z undo
-vim.keymap.set('i', '<C-z>', '<cmd>:undo<cr>')
+set('i', '<C-z>', '<cmd>:undo<cr>')
 
 -- Ctrl-S save
-vim.keymap.set({ 'n', 'i' }, '<C-s>', '<cmd>:w<cr>')
+set({ 'n', 'i' }, '<C-s>', '<cmd>:w<cr>')
 
 -- Alt window switch
-vim.keymap.set('n', '<A-Up>', '<C-w><Up>', { remap = true })
-vim.keymap.set('n', '<A-Down>', '<C-w><Down>', { remap = true })
-vim.keymap.set('n', '<A-Left>', '<C-w><Left>', { remap = true })
-vim.keymap.set('n', '<A-Right>', '<C-w><Right>', { remap = true })
-vim.keymap.set('n', '<A-k>', '<C-w>k')
-vim.keymap.set('n', '<A-j>', '<C-w>j')
-vim.keymap.set('n', '<A-h>', '<C-w>h')
-vim.keymap.set('n', '<A-l>', '<C-w>l')
+set('n', '<A-Up>', '<C-w><Up>', { remap = true })
+set('n', '<A-Down>', '<C-w><Down>', { remap = true })
+set('n', '<A-Left>', '<C-w><Left>', { remap = true })
+set('n', '<A-Right>', '<C-w><Right>', { remap = true })
+set('n', '<A-k>', '<C-w>k')
+set('n', '<A-j>', '<C-w>j')
+set('n', '<A-h>', '<C-w>h')
+set('n', '<A-l>', '<C-w>l')
 
-vim.keymap.set('i', '<C-l>', '::')
-vim.keymap.set('i', '<S-Tab>', '<C-d>')
+set('i', '<C-l>', '::')
+set('i', '<S-Tab>', '<C-d>')
 
-vim.keymap.set('n', '<leader>p', '<C-w><C-p>', { remap = true })
+set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 
 -- Clipboard convenience
-vim.keymap.set('n', '<Space>y', '"+y')
-vim.keymap.set('n', '<Space>p', '"+p')
-vim.keymap.set('n', '<Space><S-p>', '"+P')
+set('n', '<Space>y', '"+y')
+set('n', '<Space>p', '"+p')
+set('n', '<Space><S-p>', '"+P')
 
 -- Maximize window
-vim.keymap.set('n', '<C-w>m', function()
+set('n', '<C-w>m', function()
     vim.api.nvim_win_set_height(0, 9999)
     vim.api.nvim_win_set_width(0, 9999)
 end)
 
-vim.keymap.set('n', '<C-w>x', '<cmd>:q<cr>')
+set('n', '<C-w>x', '<cmd>:q<cr>')
 
 -- Move binds
-vim.keymap.set('i', '<A-k>', '<cmd>:m .-2<cr><C-o>==', { remap = false, silent = true })
-vim.keymap.set('i', '<A-j>', '<cmd>:m .+1<cr><C-o>==', { remap = false, silent = true })
+set('i', '<A-k>', '<cmd>:m .-2<cr><C-o>==', { silent = true })
+set('i', '<A-j>', '<cmd>:m .+1<cr><C-o>==', { silent = true })
 
-vim.keymap.set('v', '<A-j>', [[:m '>+1<cr>gv=gv]], { remap = false, silent = true })
-vim.keymap.set('v', '<A-k>', [[:m '<-2<cr>gv=gv]], { remap = false, silent = true })
+set('v', '<A-j>', [[:m '>+1<cr>gv=gv]], { silent = true })
+set('v', '<A-k>', [[:m '<-2<cr>gv=gv]], { silent = true })
+
+-- Jump commands
+set('n', ']q', '<cmd>:cnext<cr>', { silent = true })
+set('n', '[q', '<cmd>:cprev<cr>', { silent = true })
+
+set('n', ']b', '<cmd>:bnext<cr>', { silent = true })
+set('n', '[b', '<cmd>:bprev<cr>', { silent = true })
+
+-- Go to next row containing text on column
+vim.api.nvim_create_user_command('ColDown', function(_)
+    vim.cmd.call([[search('\%' . virtcol('.') . 'v\S', 'W')]])
+    vim.cmd.call([[repeat#set("\<cmd>ColDown\<cr>", v:count)]])
+end, {})
+vim.api.nvim_create_user_command('ColUp', function(_)
+    vim.cmd.call([[search('\%' . virtcol('.') . 'v\S', 'bW')]])
+    vim.cmd.call([[repeat#set("\<cmd>ColUp\<cr>", v:count)]])
+end, {})
+
+set('n', '<leader>j', [[<cmd>:ColDown<CR>]], { silent = true })
+set('n', '<leader>k', [[<cmd>:ColUp<CR>]], { silent = true })
+
 
 -- Create scratch buffer
 ScratchCount = 0
-vim.api.nvim_create_user_command('Scratch', function (args)
+vim.api.nvim_create_user_command('Scratch', function(args)
     local old_splitright = vim.o.splitright
     vim.o.splitright = true
     vim.cmd('vertical split')
@@ -127,7 +149,7 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = { 'qf' },
     -- command = [[nnoremap <buffer><nowait><silent> <Space> <cr>:lclose:cclose<cr>]]
     callback = function()
-        vim.keymap.set('n', '<Space>', function()
+        set('n', '<Space>', function()
             local isLocList =
                 vim.fn.getwininfo(vim.fn.win_getid())[1].loclist == 1
             local lnum = vim.fn.line('.')
