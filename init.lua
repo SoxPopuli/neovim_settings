@@ -48,6 +48,8 @@ vim.o.mouse = "nv"
 
 vim.o.cursorline = true
 
+vim.o.foldlevel = 16
+
 -- Keybinds
 local set = vim.keymap.set
 
@@ -142,6 +144,14 @@ vim.api.nvim_create_user_command('Scratch', function(args)
     end
     vim.cmd('b ' .. buf)
 end, { desc = "Create temporary scratch buffer", nargs = '?' })
+
+vim.api.nvim_create_user_command('TermOpen', function(args)
+    require('termopen').open(args.args)
+end, { nargs = 1 })
+
+vim.api.nvim_create_user_command('TermOpenCenter', function(args)
+    require('termopen').open_centered(args.args)
+end, { nargs = 1 })
 
 -- autocommands
 vim.api.nvim_create_autocmd("FileType", {

@@ -401,6 +401,8 @@ local function packerStartup(use)
 
 	use({ 'stevearc/oil.nvim', tag = 'stable' }) -- File Explorer
 
+	use({'nvim-tree/nvim-web-devicons'})
+
 	-- Keep at end - downloads updates
 	if plugins.CheckPackerExists() then
 		require("packer").sync()
