@@ -403,6 +403,8 @@ local function packerStartup(use)
 
 	use({'nvim-tree/nvim-web-devicons'})
 
+	use({ 'johmsalas/text-case.nvim', requires = { 'nvim-telescope/telescope.nvim'  } })
+
 	-- Keep at end - downloads updates
 	if plugins.CheckPackerExists() then
 		require("packer").sync()

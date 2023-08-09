@@ -97,6 +97,8 @@ end)
 
 set('n', '<C-w>x', '<cmd>:q<cr>')
 
+set('n', '<space><space>', 'a<space><Esc>h')
+
 -- Move binds
 set('i', '<A-k>', '<cmd>:m .-2<cr><C-o>==', { silent = true })
 set('i', '<A-j>', '<cmd>:m .+1<cr><C-o>==', { silent = true })
@@ -149,7 +151,7 @@ vim.api.nvim_create_user_command('TermOpen', function(args)
     require('termopen').open(args.args)
 end, { nargs = 1 })
 
-vim.api.nvim_create_user_command('TermOpenCenter', function(args)
+vim.api.nvim_create_user_command('TermCenter', function(args)
     require('termopen').open_centered(args.args)
 end, { nargs = 1 })
 
