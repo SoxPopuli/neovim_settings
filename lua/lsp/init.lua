@@ -217,6 +217,7 @@ function M.setup()
       'yamlls',
       'marksman',
       'tsserver',
+      'omnisharp'
     }
   })
 
@@ -247,6 +248,7 @@ function M.setup()
   defaultSetup(lspconfig.yamlls)
   defaultSetup(lspconfig.marksman)
   defaultSetup(lspconfig.tsserver)
+  defaultSetup(lspconfig.omnisharp)
 
   lspconfig.ocamllsp.setup({
     on_attach = function(client, bufnr)
