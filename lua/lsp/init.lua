@@ -168,11 +168,18 @@ local function setupScala(capabilities)
   local metals_config = require('metals').bare_config()
   metals_config.settings = {
     showImplicitArguments = true,
+    showInferredType = true,
+    showImplicitConversionsAndClasses = true,
+    superMethodLensesEnabled = true,
+    enableSemanticHighlighting = true,
     excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
   }
+  metals_config.init_options.statusBarProvider = "on"
+
   metals_config.capabilities = capabilities
-  metals_config.on_attach = function(_, _)
+  metals_config.on_attach = function(client, bufnr)
     require('metals').setup_dap()
+    lspOnAttach(client, bufnr)
   end
 
   -- Autocmd that will actually be in charging of starting the whole thing
