@@ -126,6 +126,8 @@ end, {})
 set('n', '<leader>j', [[<cmd>:ColDown<CR>]], { silent = true })
 set('n', '<leader>k', [[<cmd>:ColUp<CR>]], { silent = true })
 
+-- make bind
+set('n', '<leader>mk', '<cmd>:make<CR>')
 
 -- Create scratch buffer
 ScratchCount = 0
