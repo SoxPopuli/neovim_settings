@@ -37,6 +37,9 @@ local function setupKeys()
   vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 
+  vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end)
+  vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end)
+
   local has_telescope, builtins = pcall(require, 'telescope.builtin')
   if has_telescope then
     vim.keymap.set('n', '<space>q', function()

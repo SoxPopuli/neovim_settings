@@ -129,6 +129,12 @@ set('n', '<leader>k', [[<cmd>:ColUp<CR>]], { silent = true })
 -- make bind
 set('n', '<leader>mk', '<cmd>:make<CR>')
 
+-- MacOS specific functionality
+if vim.fn.has('mac') then
+    -- Fix gx not working properly on Mac
+    set('n', 'gx', '<cmd>:silent exec "!open <cWORD>"<cr>', { silent = true })
+end
+
 -- Create scratch buffer
 ScratchCount = 0
 vim.api.nvim_create_user_command('Scratch', function(args)
