@@ -276,6 +276,9 @@ local function packerStartup(use)
 		end,
 	})
 
+	-- Async linting
+	use('mfussenegger/nvim-lint')
+
 	use({
 		'lukas-reineke/indent-blankline.nvim',
 		config = function()

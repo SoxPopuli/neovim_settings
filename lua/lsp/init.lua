@@ -13,7 +13,7 @@ local function apply_formatting(bufnr)
     filter = function(client)
       -- Apply formatting logic here
       local filetypes = {
-        typescript = "tsserver",
+        typescript = "null-ls",
         fsharp = "null-ls",
       }
 
@@ -239,6 +239,8 @@ function M.setup()
     'fantomas',
     'prettier',
     'stylua',
+    'eslint_d',
+    'luacheck',
   })
 
   local function defaultSetup(server)
