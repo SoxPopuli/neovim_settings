@@ -107,8 +107,14 @@ set('v', '<A-j>', [[:m '>+1<cr>gv=gv]], { silent = true })
 set('v', '<A-k>', [[:m '<-2<cr>gv=gv]], { silent = true })
 
 -- Jump commands
-set('n', ']q', '<cmd>:cnext<cr>', { silent = true })
-set('n', '[q', '<cmd>:cprev<cr>', { silent = true })
+set('n', ']q', function()
+    local count = vim.v.count1
+    vim.cmd(count .. 'cnext')
+end, { silent = true })
+set('n', '[q', function()
+    local count = vim.v.count1
+    vim.cmd(count .. 'cprev')
+end, { silent = true })
 
 set('n', ']b', '<cmd>:bnext<cr>', { silent = true })
 set('n', '[b', '<cmd>:bprev<cr>', { silent = true })
