@@ -85,9 +85,9 @@ set('i', '<S-Tab>', '<C-d>')
 set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 
 -- Clipboard convenience
-set('n', '<Space>y', '"+y')
-set('n', '<Space>p', '"+p')
-set('n', '<Space><S-p>', '"+P')
+set({ 'n', 'v' }, '<Space>y', '"+y')
+set({ 'n', 'v' }, '<Space>p', '"+p')
+set({ 'n', 'v' }, '<Space><S-p>', '"+P')
 
 -- Maximize window
 set('n', '<C-w>m', function()
