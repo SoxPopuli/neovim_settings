@@ -234,7 +234,8 @@ function M.setup()
       'yamlls',
       'marksman',
       'tsserver',
-      'omnisharp'
+      'omnisharp',
+      'rescriptls',
     }
   })
 

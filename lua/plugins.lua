@@ -194,12 +194,14 @@ local function packerStartup(use)
 	use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
 
 	-- Treesitter
-	use({ "HiPhish/nvim-ts-rainbow2" })
 	use({
 		"nvim-treesitter/nvim-treesitter",
 		run = treesitterUpdate,
 		config = treesitterConfig,
 	})
+
+	use({ "HiPhish/rainbow-delimiters.nvim", requires = { "nvim-treesitter/nvim-treesitter" } })
+	--use({ "~/Code/lua/rainbow-delimiters.nvim", requires = { "nvim-treesitter/nvim-treesitter" } })
 
 	use({ 'SoxPopuli/fsharp-tools.nvim' })
 

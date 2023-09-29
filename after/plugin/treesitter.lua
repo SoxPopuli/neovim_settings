@@ -1,5 +1,3 @@
-local rainbow = require('ts-rainbow')
-
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 parser_config.fsharp = {
 	install_info = {
@@ -36,23 +34,29 @@ local setupConfig = {
 	highlight = {
 		enable = true
 	},
-
-	rainbow = {
-		enable = true,
-		query = 'rainbow-parens',
-		strategy = {
-			rainbow.strategy.global7
-		}
-	}
 }
 
 require('nvim-treesitter.configs').setup(setupConfig)
 
--- Rainbow colors (All at 60% saturation)
--- vim.cmd('hi TSRainbowRed guifg=#cc3333')
--- vim.cmd('hi TSRainbowOrange guifg=#cc8033')
--- vim.cmd('hi TSRainbowYellow guifg=#cccc33')
--- vim.cmd('hi TSRainbowGreen guifg=#33cc33')
--- vim.cmd('hi TSRainbowCyan guifg=#33cccc')
--- vim.cmd('hi TSRainbowBlue guifg=#3333cc')
--- vim.cmd('hi TSRainbowViolet guifg=#cc33cc')
+-- This module contains a number of default definitions
+local rainbow_delimiters = require('rainbow-delimiters')
+
+vim.g.rainbow_delimiters = {
+    strategy = {
+        [''] = rainbow_delimiters.strategy['global'],
+        vim = rainbow_delimiters.strategy['local'],
+    },
+    query = {
+        [''] = 'rainbow-delimiters',
+        lua = 'rainbow-blocks',
+    },
+    highlight = {
+        'RainbowDelimiterRed',
+        'RainbowDelimiterYellow',
+        'RainbowDelimiterBlue',
+        'RainbowDelimiterOrange',
+        'RainbowDelimiterGreen',
+        'RainbowDelimiterViolet',
+        'RainbowDelimiterCyan',
+    },
+}
