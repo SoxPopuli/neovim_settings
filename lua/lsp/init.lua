@@ -8,6 +8,13 @@ local cmp = require('cmp')
 local rt = require('rust-tools')
 local hints = require('inlay-hints')
 
+hints.setup({
+  only_current_line = false,
+  eol = {
+    right_align = false,
+  }
+})
+
 local function apply_formatting(bufnr)
   vim.lsp.buf.format({
     filter = function(client)
@@ -292,6 +299,7 @@ function M.setup()
     on_attach = function(client, bufnr)
       lspOnAttach(client, bufnr)
       codelens.setup_codelens_refresh(bufnr)
+      -- hints.on_attach(client, bufnr)
     end,
     capabilities = capabilities,
     settings = {
@@ -310,6 +318,9 @@ function M.setup()
         SimplifyNameAnalyzer = true,
         UnusedOpensAnalyzer = true,
         UnusedDeclarationsAnalyzer = true,
+        CodeLenses = { Signature = { Enabled = true }, References = { Enabled = true } },
+        LineLens = { Enabled = "always", Prefix = "" },
+        PipelineHints = { Enabled = true, Prefix = "" }
       }
     },
   })

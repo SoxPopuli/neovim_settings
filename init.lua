@@ -135,6 +135,18 @@ set('n', '<leader>k', [[<cmd>:ColUp<CR>]], { silent = true })
 -- make bind
 set('n', '<leader>mk', '<cmd>:make<CR>')
 
+-- toggle virtual edit mode
+-- (lets you move cursor to anywhere on screen)
+set({ 'n', 'v' }, '<leader>v', function ()
+    if(vim.go.virtualedit == "") then
+        vim.go.virtualedit = "all"
+        print('Virtual Edit: Enabled')
+    else
+        vim.go.virtualedit = ""
+        print('Virtual Edit: Disabled')
+    end
+end)
+
 -- MacOS specific functionality
 if vim.fn.has('mac') then
     -- Fix gx not working properly on Mac

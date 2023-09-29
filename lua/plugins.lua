@@ -281,6 +281,7 @@ local function packerStartup(use)
 
 	use({
 		'lukas-reineke/indent-blankline.nvim',
+		tag = 'v2.20.8',
 		config = function()
 			require('indent_blankline').setup({
 				-- enabled = false,
