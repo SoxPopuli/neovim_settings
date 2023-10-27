@@ -147,6 +147,18 @@ set({ 'n', 'v' }, '<leader>v', function ()
     end
 end)
 
+-- Set indent level keymap
+set('n', '<leader>s', function ()
+    local count = vim.v.count
+
+    if count == 0 then
+        return
+    else
+        vim.bo.sw = count
+        print("shiftwidth set to " .. count)
+    end
+end)
+
 -- MacOS specific functionality
 if vim.fn.has('mac') then
     -- Fix gx not working properly on Mac
