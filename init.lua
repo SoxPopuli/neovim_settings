@@ -202,3 +202,7 @@ vim.api.nvim_create_autocmd("FileType", {
         end, { buffer = true, nowait = true, silent = true })
     end
 })
+
+-- abbreviations
+vim.cmd.iabbrev("stirng string")
+vim.cmd.iabbrev("Stirng String")
