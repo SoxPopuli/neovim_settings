@@ -330,6 +330,8 @@ local function packerStartup(use)
 
 	use({ 'johmsalas/text-case.nvim', requires = { 'nvim-telescope/telescope.nvim'  } })
 
+	use({ 'rescript-lang/vim-rescript' })
+
 	-- Keep at end - downloads updates
 	if plugins.CheckPackerExists() then
 		require("packer").sync()

@@ -269,6 +269,7 @@ function M.setup()
   defaultSetup(lspconfig.marksman)
   defaultSetup(lspconfig.tsserver)
   defaultSetup(lspconfig.omnisharp)
+  defaultSetup(lspconfig.rescriptls)
 
   lspconfig.ocamllsp.setup({
     on_attach = function(client, bufnr)
