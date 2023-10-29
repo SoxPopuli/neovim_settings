@@ -5,11 +5,11 @@ vim.o.termguicolors = 1 -- Enable full color support
 if vim.go.loadplugins then
     vim.highlight.priorities.semantic_tokens = 95 -- Prefer treesitter to lsp semantic highlights
 
-    local plugins = require('plugins')
+    local lazy_setup = require('lazy_setup')
 
-    plugins.install_lazy()
+    lazy_setup.install_lazy()
 
-    plugins.startup()
+    lazy_setup.startup()
     require('lsp').setup()
 
     vim.cmd.packadd("termdebug")
@@ -85,19 +85,19 @@ set('i', '<S-Tab>', '<C-d>')
 set('n', '<leader>p', '<C-w><C-p>', { remap = true })
 
 -- Clipboard convenience
-set({ 'n', 'v' }, '<Space>y', '"+y')
-set({ 'n', 'v' }, '<Space>p', '"+p')
-set({ 'n', 'v' }, '<Space><S-p>', '"+P')
+set({ 'n', 'v' }, '<Space>y', '"+y', { desc = "Yank to clipboard" })
+set({ 'n', 'v' }, '<Space>p', '"+p', { desc = "Paste from clipboard" })
+set({ 'n', 'v' }, '<Space><S-p>', '"+P', { desc = "Paste (before) from clipboard" })
 
 -- Maximize window
 set('n', '<C-w>m', function()
     vim.api.nvim_win_set_height(0, 9999)
     vim.api.nvim_win_set_width(0, 9999)
-end)
+end, { desc = "Maximize window" })
 
-set('n', '<C-w>x', '<cmd>:q<cr>')
+set('n', '<C-w>x', '<cmd>:q<cr>', { desc = "Close window" })
 
-set('n', '<space><space>', 'a<space><Esc>h')
+set('n', '<space><space>', 'a<space><Esc>h', { desc = "Add space after cursor" })
 
 -- Move binds
 set('i', '<A-k>', '<cmd>:m .-2<cr><C-o>==', { silent = true })
@@ -110,14 +110,14 @@ set('v', '<A-k>', [[:m '<-2<cr>gv=gv]], { silent = true })
 set('n', ']q', function()
     local count = vim.v.count1
     vim.cmd(count .. 'cnext')
-end, { silent = true })
+end, { silent = true, desc = "Next quickfix item" })
 set('n', '[q', function()
     local count = vim.v.count1
     vim.cmd(count .. 'cprev')
-end, { silent = true })
+end, { silent = true, desc = "Previous quickfix item" })
 
-set('n', ']b', '<cmd>:bnext<cr>', { silent = true })
-set('n', '[b', '<cmd>:bprev<cr>', { silent = true })
+set('n', ']b', '<cmd>:bnext<cr>', { silent = true, desc = "Next buffer" })
+set('n', '[b', '<cmd>:bprev<cr>', { silent = true, desc = "Previous buffer" })
 
 -- Go to next row containing text on column
 vim.api.nvim_create_user_command('ColDown', function(_)
@@ -133,7 +133,7 @@ set('n', '<leader>j', [[<cmd>:ColDown<CR>]], { silent = true })
 set('n', '<leader>k', [[<cmd>:ColUp<CR>]], { silent = true })
 
 -- make bind
-set('n', '<leader>mk', '<cmd>:make<CR>')
+set('n', '<leader>mk', '<cmd>:make<CR>', { desc = "Make" })
 
 -- toggle virtual edit mode
 -- (lets you move cursor to anywhere on screen)
@@ -145,7 +145,7 @@ set({ 'n', 'v' }, '<leader>v', function ()
         vim.go.virtualedit = ""
         print('Virtual Edit: Disabled')
     end
-end)
+end, { desc = "Toggle virtual edit" })
 
 -- Set indent level keymap
 set('n', '<leader>s', function ()
@@ -157,7 +157,7 @@ set('n', '<leader>s', function ()
         vim.bo.sw = count
         print("shiftwidth set to " .. count)
     end
-end)
+end, { desc = "Set shiftwidth" })
 
 -- MacOS specific functionality
 if vim.fn.has('mac') then

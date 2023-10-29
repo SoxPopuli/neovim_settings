@@ -94,7 +94,7 @@ vim.keymap.set("n", "<leader>z", function()
     else
         api.tree.open()
     end
-end)
+end, { desc = "Toggle Tree View" })
 vim.keymap.set("n", "<leader>x", function()
     api.tree.close()
-end)
+end, { desc = "Close Tree View" })

@@ -18,6 +18,9 @@ function M.install_lazy()
 end
 
 local plugins = {
+    -- TODO: migrate to plugins folder
+    { import = "plugins" },
+
     "nvim-lualine/lualine.nvim",
     {
         "j-hui/fidget.nvim",
@@ -33,19 +36,18 @@ local plugins = {
     "tpope/vim-repeat",
 
     "preservim/nerdcommenter",
-
-    { "dracula/vim",           name = "dracula",                           lazy = true, priority = 1000 },
+    { "dracula/vim",           name = "dracula",                           lazy = true,  priority = 1000 },
     { "catppuccin/nvim",       name = "catppuccin",                        lazy = false, priority = 1000 },
     { "scalameta/nvim-metals", dependencies = { "nvim-lua/plenary.nvim" }, ft = "scala" },
 
     "neovim/nvim-lspconfig",
-    { "williamboman/mason.nvim", build = ":MasonUpdate" },
+    { "williamboman/mason.nvim",  build = ":MasonUpdate" },
     "williamboman/mason-lspconfig.nvim",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-cmdline",
-    "simrat39/rust-tools.nvim",
+    { "simrat39/rust-tools.nvim", ft = "rust" },
 
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
@@ -68,25 +70,20 @@ local plugins = {
 
     {
         "mbbill/undotree",
-        config = function()
-            vim.keymap.set("n", "<leader>u", function()
-                vim.cmd.UndotreeToggle()
-            end)
-        end,
-    },
-
-    {
-        "tpope/vim-fugitive",
-        config = function()
-            vim.keymap.set("n", "<leader>g", function()
-                vim.cmd.Git()
-            end)
-        end,
+        keys = {
+            {
+                "<leader>u",
+                function()
+                    vim.cmd.UndotreeToggle()
+                end,
+                desc = "Toggle Undotree"
+            }
+        }
     },
 
     -- Debugger protocol support
     "mfussenegger/nvim-dap",
-    { "rcarriga/nvim-dap-ui",    dependencies = { "mfussenegger/nvim-dap" } },
+    { "rcarriga/nvim-dap-ui",            dependencies = { "mfussenegger/nvim-dap" } },
 
     -- Treesitter
     {
@@ -148,15 +145,8 @@ local plugins = {
     },
 
 
-    {
-        'nvim-telescope/telescope.nvim',
-        branch = '0.1.x',
-        dependencies = { { 'nvim-lua/plenary.nvim' } }
-    },
-
-    { 'nvim-telescope/telescope-ui-select.nvim', dependencies = { 'nvim-telescope/telescope.nvim' } },
-{     'nvim-tree/nvim-web-devicons', lazy = true },
-    { 'johmsalas/text-case.nvim',                dependencies = { 'nvim-telescope/telescope.nvim' } },
+    { 'nvim-telescope/telescope-ui-select.nvim', dependencies = 'nvim-telescope/telescope.nvim', lazy = true },
+    { 'nvim-tree/nvim-web-devicons',             lazy = true },
     { 'rescript-lang/vim-rescript',              ft = 'rescript' },
 
 }

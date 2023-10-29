@@ -40,20 +40,20 @@ end
 local function setupKeys()
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, { desc = "Open diagnostic window" })
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 
-  vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end)
-  vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end)
+  vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Previous error" })
+  vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Next error" })
 
   local has_telescope, builtins = pcall(require, 'telescope.builtin')
   if has_telescope then
     vim.keymap.set('n', '<space>q', function()
       builtins.diagnostics()
-    end)
+    end, { desc = "Show diagnostics" })
   else
-    vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+    vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, { desc = "Show diagnostics" })
   end
 end
 
@@ -64,18 +64,18 @@ local function lspOnAttach(client, bufnr)
   -- Buffer local mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   local opts = { buffer = bufnr }
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts, { desc = "Go to declaration" })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
   vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
   vim.keymap.set('n', '<space>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, opts)
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-  vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts, { desc = "Rename" })
+  vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts, { desc = "Code action" })
   vim.keymap.set('n', '<space>f', function()
     apply_formatting(bufnr)
-  end, opts)
+  end, opts, { desc = "Format buffer" })
 
   local functions = {}
   local has_telescope, builtins = pcall(require, 'telescope.builtin')
@@ -96,13 +96,13 @@ local function lspOnAttach(client, bufnr)
       references = vim.lsp.buf.references,
     }
   end
-  vim.keymap.set('n', 'gI', functions.implementation, opts)
-  vim.keymap.set('n', '<space>wq', functions.symbols, opts)
-  vim.keymap.set('n', 'gd', functions.definitions, opts)
-  vim.keymap.set('n', '<space>D', functions.type_definitions, opts)
-  vim.keymap.set('n', 'gr', functions.references, opts)
+  vim.keymap.set('n', 'gI', functions.implementation, opts, { desc = "Go to implementation" })
+  vim.keymap.set('n', '<space>wq', functions.symbols, opts, { desc = "Show workspace symbols" })
+  vim.keymap.set('n', 'gd', functions.definitions, opts, { desc = "Go to definition" })
+  vim.keymap.set('n', '<space>D', functions.type_definitions, opts, { desc = "Go to type definition" })
+  vim.keymap.set('n', 'gr', functions.references, opts, { desc = "Go to references" })
 
-  -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
   -- hints.setup()
   -- hints.on_attach(client, bufnr)
 end
