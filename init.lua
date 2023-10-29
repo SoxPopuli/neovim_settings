@@ -7,9 +7,7 @@ if vim.go.loadplugins then
 
     local plugins = require('plugins')
 
-    if plugins.CheckPackerExists() == false then
-        plugins.InstallPacker()
-    end
+    plugins.install_lazy()
 
     plugins.startup()
     require('lsp').setup()
@@ -17,8 +15,10 @@ if vim.go.loadplugins then
     vim.cmd.packadd("termdebug")
     vim.go.termdebug_wide = 1
 
-    vim.cmd.colorscheme("catppuccin-mocha")
 end
+
+vim.cmd.colorscheme("catppuccin-mocha")
+vim.cmd.colorscheme("catppuccin-mocha")
 
 vim.o.path = vim.o.path .. "**"
 vim.o.listchars = vim.o.listchars .. ",space:·"

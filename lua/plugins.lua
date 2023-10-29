@@ -1,197 +1,173 @@
-local plugins = {}
+local M = {}
 
-local priv = {}
-plugins.priv = plugins
+function M.install_lazy()
+    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-AutopairsConfigSet = false
+    if not vim.loop.fs_stat(lazypath) then
+        vim.fn.system({
+            "git",
+            "clone",
+            "--filter=blob:none",
+            "https://github.com/folke/lazy.nvim.git",
+            "--branch=stable",
+            lazypath,
+        })
+    end
 
-local configPath = vim.fn.stdpath("config")
-local dataPath = vim.fn.stdpath("data")
-
-local packerPath = dataPath .. [[/site/pack/packer/start/packer.nvim]]
-packerPath = packerPath:gsub([[\]], [[\\]]) -- Escape path separators on Windows
-
-function plugins.CheckPackerExists()
-	if vim.fn.glob(packerPath) == "" then
-		return false
-	else
-		return true
-	end
+    vim.opt.rtp:prepend(lazypath)
 end
 
-function plugins.InstallPacker()
-	local repo = "https://github.com/wbthomason/packer.nvim"
-	vim.cmd([[!mkdir -pv ]] .. packerPath)
-	vim.cmd([[!git clone --depth 1 ]] .. repo .. " " .. packerPath)
-	vim.cmd([[packadd packer.nvim]])
+local plugins = {
+    "nvim-lualine/lualine.nvim",
+    {
+        "j-hui/fidget.nvim",
+        branch = "legacy",
+        config = function()
+            require("fidget").setup({
+                text = { spinner = "bouncing_ball" }
+            })
+        end,
+    },
+
+    "tpope/vim-surround",
+    "tpope/vim-repeat",
+
+    "preservim/nerdcommenter",
+
+    { "dracula/vim",           name = "dracula",                           lazy = true, priority = 1000 },
+    { "catppuccin/nvim",       name = "catppuccin",                        lazy = false, priority = 1000 },
+    { "scalameta/nvim-metals", dependencies = { "nvim-lua/plenary.nvim" }, ft = "scala" },
+
+    "neovim/nvim-lspconfig",
+    { "williamboman/mason.nvim", build = ":MasonUpdate" },
+    "williamboman/mason-lspconfig.nvim",
+    "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-cmdline",
+    "simrat39/rust-tools.nvim",
+
+    "L3MON4D3/LuaSnip",
+    "saadparwaiz1/cmp_luasnip",
+
+    {
+        'ionide/Ionide-vim',
+        config = function()
+            vim.g['fsharp#backend'] = 'disable'
+            vim.g['fsharp#lsp_auto_setup'] = 0
+            vim.g['fsharp#lsp_codelens'] = 0
+            vim.g['fsharp#use_recommended_server_config'] = 0
+        end
+    },
+
+    "simrat39/inlay-hints.nvim",
+    -- use { 'lvimuser/lsp-inlayhints.nvim' }
+
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-nvim-lsp-signature-help",
+
+    {
+        "mbbill/undotree",
+        config = function()
+            vim.keymap.set("n", "<leader>u", function()
+                vim.cmd.UndotreeToggle()
+            end)
+        end,
+    },
+
+    {
+        "tpope/vim-fugitive",
+        config = function()
+            vim.keymap.set("n", "<leader>g", function()
+                vim.cmd.Git()
+            end)
+        end,
+    },
+
+    -- Debugger protocol support
+    "mfussenegger/nvim-dap",
+    { "rcarriga/nvim-dap-ui",    dependencies = { "mfussenegger/nvim-dap" } },
+
+    -- Treesitter
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = function()
+            local tsUpdate = require("nvim-treesitter.install").update({ with_sync = true })
+            tsUpdate()
+        end,
+    },
+
+    { "HiPhish/rainbow-delimiters.nvim", dependencies = { "nvim-treesitter/nvim-treesitter" } },
+    --use({ "~/Code/lua/rainbow-delimiters.nvim", dependencies = { "nvim-treesitter/nvim-treesitter" } })
+
+    { "SoxPopuli/fsharp-tools.nvim",     ft = "fsharp" },
+
+    -- Outline view: LSP / Treesitter driven
+    "stevearc/aerial.nvim",
+
+    -- Better Syntax Support
+    "sheerun/vim-polyglot",
+    -- File Explorer
+    "nvim-tree/nvim-tree.lua",
+
+    -- Auto pairs for '(' '[' '{'
+    {
+        "windwp/nvim-autopairs",
+        dependencies = "hrsh7th/nvim-cmp",
+    },
+    -- If you want insert `(` after select function or method item
+
+    -- tmux integration
+    "aserowy/tmux.nvim",
+
+    {
+        "jose-elias-alvarez/null-ls.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            local null_ls = require("null-ls")
+            null_ls.setup({
+                sources = {
+                    null_ls.builtins.formatting.fantomas,
+                    null_ls.builtins.formatting.prettier,
+                },
+            })
+        end,
+    },
+
+    -- Async linting
+    'mfussenegger/nvim-lint',
+
+    {
+        'lukas-reineke/indent-blankline.nvim',
+        version = 'v2.20.8',
+    },
+
+    {
+        'ldelossa/gh.nvim',
+        dependencies = { { 'ldelossa/litee.nvim' } }
+    },
+
+
+    {
+        'nvim-telescope/telescope.nvim',
+        branch = '0.1.x',
+        dependencies = { { 'nvim-lua/plenary.nvim' } }
+    },
+
+    { 'nvim-telescope/telescope-ui-select.nvim', dependencies = { 'nvim-telescope/telescope.nvim' } },
+{     'nvim-tree/nvim-web-devicons', lazy = true },
+    { 'johmsalas/text-case.nvim',                dependencies = { 'nvim-telescope/telescope.nvim' } },
+    { 'rescript-lang/vim-rescript',              ft = 'rescript' },
+
+}
+
+function M.startup()
+    require("lazy").setup(plugins, {
+        checker = {
+            enabled = true,
+            frequency = 86400, -- Once per day
+        },
+    })
 end
 
-local function packerStartup(use)
-	use({ "nvim-lualine/lualine.nvim" })
-
-	use({
-		"j-hui/fidget.nvim",
-		branch = "legacy",
-		config = function()
-			require("fidget").setup({
-				text = { spinner = "bouncing_ball" }
-			})
-		end,
-	})
-
-	use("wbthomason/packer.nvim")
-	use("tpope/vim-surround")
-	use("tpope/vim-repeat")
-
-	use({ "preservim/nerdcommenter" })
-
-	use({ "dracula/vim", as = "dracula" })
-	use({ "catppuccin/nvim", as = "catppuccin" })
-
-	use({ "scalameta/nvim-metals", requires = { "nvim-lua/plenary.nvim" } })
-
-	-- LSP plugins
-	use {
-		{ "neovim/nvim-lspconfig" },
-		{ "williamboman/mason.nvim",          run = ":masonupdate" },
-		{ "williamboman/mason-lspconfig.nvim" },
-		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "hrsh7th/cmp-buffer" },
-		{ "hrsh7th/cmp-path" },
-		{ "hrsh7th/cmp-cmdline" },
-		{ "simrat39/rust-tools.nvim" },
-	}
-
-	use({ "L3MON4D3/LuaSnip" })
-	use({ "saadparwaiz1/cmp_luasnip" })
-
-	use {
-		'ionide/Ionide-vim',
-		config = function()
-			vim.g['fsharp#backend'] = 'disable'
-			vim.g['fsharp#lsp_auto_setup'] = 0
-			vim.g['fsharp#lsp_codelens'] = 0
-			vim.g['fsharp#use_recommended_server_config'] = 0
-		end
-	}
-
-	use({ "simrat39/inlay-hints.nvim" })
-	-- use { 'lvimuser/lsp-inlayhints.nvim' }
-
-	use({ "hrsh7th/nvim-cmp" })
-	use({ "hrsh7th/cmp-nvim-lsp-signature-help" })
-
-	use({
-		"mbbill/undotree",
-		config = function()
-			vim.keymap.set("n", "<leader>u", function()
-				vim.cmd.UndotreeToggle()
-			end)
-		end,
-	})
-
-	use({
-		"tpope/vim-fugitive",
-		config = function()
-			vim.keymap.set("n", "<leader>g", function()
-				vim.cmd.Git()
-			end)
-		end,
-	})
-
-	-- Debugger protocol support
-	use({ "mfussenegger/nvim-dap" })
-	use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
-
-	-- Treesitter
-	use({
-		"nvim-treesitter/nvim-treesitter",
-		run = function ()
-			local tsUpdate = require("nvim-treesitter.install").update({ with_sync = true })
-			tsUpdate()
-		end,
-	})
-
-	use({ "HiPhish/rainbow-delimiters.nvim", requires = { "nvim-treesitter/nvim-treesitter" } })
-	--use({ "~/Code/lua/rainbow-delimiters.nvim", requires = { "nvim-treesitter/nvim-treesitter" } })
-
-	use({ 'SoxPopuli/fsharp-tools.nvim' })
-
-	-- Outline view: LSP / Treesitter driven
-	use({ "stevearc/aerial.nvim" })
-
-	-- Better Syntax Support
-	use({ "sheerun/vim-polyglot" })
-	-- File Explorer
-	use({ "nvim-tree/nvim-tree.lua" })
-
-	-- Auto pairs for '(' '[' '{'
-	use({
-		"windwp/nvim-autopairs",
-		requires = "hrsh7th/nvim-cmp",
-	})
-	-- If you want insert `(` after select function or method item
-
-	-- tmux integration
-	use({ "aserowy/tmux.nvim" })
-
-	use({
-		"jose-elias-alvarez/null-ls.nvim",
-		requires = { "nvim-lua/plenary.nvim" },
-		config = function()
-			local null_ls = require("null-ls")
-			null_ls.setup({
-				sources = {
-					null_ls.builtins.formatting.fantomas,
-					null_ls.builtins.formatting.prettier,
-				},
-			})
-		end,
-	})
-
-	-- Async linting
-	use('mfussenegger/nvim-lint')
-
-	use({
-		'lukas-reineke/indent-blankline.nvim',
-		tag = 'v2.20.8',
-	})
-
-	use({
-		'ldelossa/gh.nvim',
-		requires = { { 'ldelossa/litee.nvim' } }
-	})
-
-
-	use {
-		'nvim-telescope/telescope.nvim',
-		branch = '0.1.x',
-		requires = { { 'nvim-lua/plenary.nvim' } }
-	}
-
-	use({ 'nvim-telescope/telescope-ui-select.nvim', requires = { 'nvim-telescope/telescope.nvim' } })
-
-	use({'nvim-tree/nvim-web-devicons'})
-
-	use({ 'johmsalas/text-case.nvim', requires = { 'nvim-telescope/telescope.nvim'  } })
-
-	use({ 'rescript-lang/vim-rescript' })
-
-	-- Keep at end - downloads updates
-	if plugins.CheckPackerExists() then
-		require("packer").sync()
-	end
-end
-
-function plugins.startup()
-	require("packer").startup({
-		packerStartup,
-		config = {
-			display = {
-				open_fn = require("packer.util").float,
-			},
-		},
-	})
-end
-
-return plugins
+return M
