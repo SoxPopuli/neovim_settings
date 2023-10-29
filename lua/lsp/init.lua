@@ -64,18 +64,18 @@ local function lspOnAttach(client, bufnr)
   -- Buffer local mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   local opts = { buffer = bufnr }
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts, { desc = "Go to declaration" })
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration" })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
   vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
   vim.keymap.set('n', '<space>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, opts)
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts, { desc = "Rename" })
-  vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts, { desc = "Code action" })
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename" })
+  vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action" })
   vim.keymap.set('n', '<space>f', function()
     apply_formatting(bufnr)
-  end, opts, { desc = "Format buffer" })
+  end, { buffer = bufnr, desc = "Format buffer" })
 
   local functions = {}
   local has_telescope, builtins = pcall(require, 'telescope.builtin')
@@ -96,13 +96,13 @@ local function lspOnAttach(client, bufnr)
       references = vim.lsp.buf.references,
     }
   end
-  vim.keymap.set('n', 'gI', functions.implementation, opts, { desc = "Go to implementation" })
-  vim.keymap.set('n', '<space>wq', functions.symbols, opts, { desc = "Show workspace symbols" })
-  vim.keymap.set('n', 'gd', functions.definitions, opts, { desc = "Go to definition" })
-  vim.keymap.set('n', '<space>D', functions.type_definitions, opts, { desc = "Go to type definition" })
-  vim.keymap.set('n', 'gr', functions.references, opts, { desc = "Go to references" })
+  vim.keymap.set('n', 'gI', functions.implementation, { buffer = bufnr, desc = "Go to implementation" })
+  vim.keymap.set('n', '<space>wq', functions.symbols, { buffer = bufnr, desc = "Show workspace symbols" })
+  vim.keymap.set('n', 'gd', functions.definitions, { buffer = bufnr, desc = "Go to definition" })
+  vim.keymap.set('n', '<space>D', functions.type_definitions, { buffer = bufnr, desc = "Go to type definition" })
+  vim.keymap.set('n', 'gr', functions.references, { buffer = bufnr, desc = "Go to references" })
 
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature help" })
   -- hints.setup()
   -- hints.on_attach(client, bufnr)
 end
