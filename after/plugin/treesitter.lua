@@ -1,3 +1,13 @@
+vim.o.foldlevel = 16
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufAdd", "BufNew", "BufNewFile", "BufWinEnter" }, {
+		group = vim.api.nvim_create_augroup("TS_FOLD_WORKAROUND", {}),
+		callback = function()
+			vim.opt.foldmethod = "expr"
+			vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+		end,
+	})
+
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 parser_config.fsharp = {
 	install_info = {
@@ -42,21 +52,21 @@ require('nvim-treesitter.configs').setup(setupConfig)
 local rainbow_delimiters = require('rainbow-delimiters')
 
 vim.g.rainbow_delimiters = {
-    strategy = {
-        [''] = rainbow_delimiters.strategy['global'],
-        vim = rainbow_delimiters.strategy['local'],
-    },
-    query = {
-        [''] = 'rainbow-delimiters',
-        lua = 'rainbow-blocks',
-    },
-    highlight = {
-        'RainbowDelimiterRed',
-        'RainbowDelimiterYellow',
-        'RainbowDelimiterBlue',
-        'RainbowDelimiterOrange',
-        'RainbowDelimiterGreen',
-        'RainbowDelimiterViolet',
-        'RainbowDelimiterCyan',
-    },
+	strategy = {
+		[''] = rainbow_delimiters.strategy['global'],
+		vim = rainbow_delimiters.strategy['local'],
+	},
+	query = {
+		[''] = 'rainbow-delimiters',
+		lua = 'rainbow-blocks',
+	},
+	highlight = {
+		'RainbowDelimiterRed',
+		'RainbowDelimiterYellow',
+		'RainbowDelimiterBlue',
+		'RainbowDelimiterOrange',
+		'RainbowDelimiterGreen',
+		'RainbowDelimiterViolet',
+		'RainbowDelimiterCyan',
+	},
 }

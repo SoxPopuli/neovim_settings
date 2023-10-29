@@ -26,97 +26,7 @@ function plugins.InstallPacker()
 	vim.cmd([[packadd packer.nvim]])
 end
 
-local function treesitterUpdate()
-	local tsUpdate = require("nvim-treesitter.install").update({ with_sync = true })
-	tsUpdate()
-end
-
-local function treesitterConfig()
-	vim.o.foldlevel = 16
-
-	vim.api.nvim_create_autocmd({ "BufEnter", "BufAdd", "BufNew", "BufNewFile", "BufWinEnter" }, {
-		group = vim.api.nvim_create_augroup("TS_FOLD_WORKAROUND", {}),
-		callback = function()
-			vim.opt.foldmethod = "expr"
-			vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-		end,
-	})
-
-	-- require('tsConfig')
-end
-
-function AutopairsConfig(npairs)
-	--local has_npairs, npairs               = pcall(require, 'nvim-autopairs')
-	local has_cmp_autopairs, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
-	local has_cmp, cmp = pcall(require, "cmp")
-	local has_Rule, Rule = pcall(require, "nvim-autopairs.rule")
-	local has_cond, cond = pcall(require, "nvim-autopairs.conds")
-
-	if not (has_cmp_autopairs and has_cmp and has_Rule and has_cond) then
-		return
-	end
-
-	if not AutopairsConfigSet then
-		cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-		AutopairsConfigSet = true
-	end
-
-	-- Add space between brackets
-	local brackets = { { "(", ")" }, { "[", "]" }, { "{", "}" } }
-	npairs.add_rules({
-		Rule(" ", " "):with_pair(function(opts)
-			local pair = opts.line:sub(opts.col - 1, opts.col)
-			return vim.tbl_contains({
-				brackets[1][1] .. brackets[1][2],
-				brackets[2][1] .. brackets[2][2],
-				brackets[3][1] .. brackets[3][2],
-			}, pair)
-		end),
-	})
-	for _, bracket in pairs(brackets) do
-		npairs.add_rules({
-			Rule(bracket[1] .. " ", " " .. bracket[2])
-				:with_pair(function()
-					return false
-				end)
-				:with_move(function(opts)
-					return opts.prev_char:match(".%" .. bracket[2]) ~= nil
-				end)
-				:use_key(bracket[2]),
-		})
-	end
-end
-
-function priv.LuaSnipConfig()
-	local luasnip = require("luasnip")
-	vim.keymap.set("s", "<Tab>", function()
-		if luasnip.expand_or_jumpable() then
-			luasnip.expand_or_jump()
-		else
-			return "<Tab>"
-		end
-	end, { expr = true })
-
-	vim.keymap.set("i", "<Tab>", function()
-		if luasnip.jumpable() then
-			luasnip.jump(1)
-		else
-			return "<Tab>"
-		end
-	end, { expr = true })
-
-	vim.keymap.set("i", "<S-Tab>", function()
-		if luasnip.jumpable() then
-			luasnip.jump(-1)
-		else
-			return "<C-d>"
-		end
-	end, { expr = true })
-end
-
 local function packerStartup(use)
-	local vscode = vim.g.vscode == 1
-
 	use({ "nvim-lualine/lualine.nvim" })
 
 	use({
@@ -152,7 +62,7 @@ local function packerStartup(use)
 		{ "simrat39/rust-tools.nvim" },
 	}
 
-	use({ "L3MON4D3/LuaSnip", config = priv.LuaSnipConfig() })
+	use({ "L3MON4D3/LuaSnip" })
 	use({ "saadparwaiz1/cmp_luasnip" })
 
 	use {
@@ -196,8 +106,10 @@ local function packerStartup(use)
 	-- Treesitter
 	use({
 		"nvim-treesitter/nvim-treesitter",
-		run = treesitterUpdate,
-		config = treesitterConfig,
+		run = function ()
+			local tsUpdate = require("nvim-treesitter.install").update({ with_sync = true })
+			tsUpdate()
+		end,
 	})
 
 	use({ "HiPhish/rainbow-delimiters.nvim", requires = { "nvim-treesitter/nvim-treesitter" } })
@@ -206,37 +118,7 @@ local function packerStartup(use)
 	use({ 'SoxPopuli/fsharp-tools.nvim' })
 
 	-- Outline view: LSP / Treesitter driven
-	use({
-		"stevearc/aerial.nvim",
-		config = function()
-			local aerial = require("aerial")
-			aerial.setup({
-				on_attach = function(bufnr)
-					vim.keymap.set("n", "]a", function()
-						aerial.next(1)
-					end, { buffer = bufnr, nowait = true })
-					vim.keymap.set("n", "[a", function()
-						aerial.prev(1)
-					end, { buffer = bufnr, nowait = true })
-
-					vim.keymap.set("n", "<M-n>", function()
-						aerial.next(1)
-					end, { buffer = bufnr, nowait = true })
-					vim.keymap.set("n", "<M-b>", function()
-						aerial.prev(1)
-					end, { buffer = bufnr, nowait = true })
-				end,
-				--filter_kind = false,
-			})
-
-			vim.keymap.set("n", "<Leader>a", function()
-				aerial.toggle({
-					focus = true,
-					direction = "right",
-				})
-			end)
-		end,
-	})
+	use({ "stevearc/aerial.nvim" })
 
 	-- Better Syntax Support
 	use({ "sheerun/vim-polyglot" })
@@ -247,14 +129,6 @@ local function packerStartup(use)
 	use({
 		"windwp/nvim-autopairs",
 		requires = "hrsh7th/nvim-cmp",
-		config = function()
-			local npairs = require("nvim-autopairs")
-			npairs.setup({
-				disable_in_visualblock = true,
-				fast_wrap = {},
-			})
-			AutopairsConfig(npairs)
-		end,
 	})
 	-- If you want insert `(` after select function or method item
 
@@ -270,9 +144,6 @@ local function packerStartup(use)
 				sources = {
 					null_ls.builtins.formatting.fantomas,
 					null_ls.builtins.formatting.prettier,
-					-- null_ls.builtins.formatting.stylua,
-					-- null_ls.builtins.diagnostics.eslint,
-					-- null_ls.builtins.completion.spell,
 				},
 			})
 		end,
@@ -284,29 +155,6 @@ local function packerStartup(use)
 	use({
 		'lukas-reineke/indent-blankline.nvim',
 		tag = 'v2.20.8',
-		config = function()
-			require('indent_blankline').setup({
-				-- enabled = false,
-				show_current_context = false,
-				show_current_context_start = false,
-				char_blankline = '┆',
-			})
-
-			vim.keymap.set('n', '<leader>id', function()
-				vim.cmd('IndentBlanklineDisable')
-				vim.cmd('IndentBlanklineDisable!')
-			end)
-			vim.keymap.set('n', '<leader>ie', function()
-				vim.cmd('IndentBlanklineEnable')
-				vim.cmd('IndentBlanklineEnable!')
-			end)
-			vim.keymap.set('n', '<leader>it', function()
-				vim.cmd('IndentBlanklineToggle')
-				vim.cmd('IndentBlanklineToggle!')
-			end)
-			vim.keymap.set('n', '<leader>il', function() vim.cmd('IndentBlanklineToggle') end)
-			vim.keymap.set('n', '<leader>ir', function() vim.cmd('IndentBlanklineRefresh') end)
-		end
 	})
 
 	use({
@@ -317,7 +165,6 @@ local function packerStartup(use)
 
 	use {
 		'nvim-telescope/telescope.nvim',
-		-- tag = '0.1.2',
 		branch = '0.1.x',
 		requires = { { 'nvim-lua/plenary.nvim' } }
 	}

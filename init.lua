@@ -14,11 +14,11 @@ if vim.go.loadplugins then
     plugins.startup()
     require('lsp').setup()
 
-
     vim.cmd.packadd("termdebug")
     vim.go.termdebug_wide = 1
+
+    vim.cmd.colorscheme("catppuccin-mocha")
 end
-vim.cmd.colorscheme("catppuccin-mocha")
 
 vim.o.path = vim.o.path .. "**"
 vim.o.listchars = vim.o.listchars .. ",space:·"
