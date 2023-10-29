@@ -16,10 +16,10 @@ vim.keymap.set("i", "<Tab>", function()
    end
 end, { expr = true })
 
- vim.keymap.set("i", "<S-Tab>", function()
-    if luasnip.jumpable() then
-       luasnip.jump(-1)
-    else
-       return "<C-d>"
-    end
- end, { expr = true })
+vim.keymap.set("i", "<S-Tab>", function()
+   if luasnip.jumpable() then
+      luasnip.jump(-1)
+   else
+      return "<C-d>"
+   end
+end, { expr = true })

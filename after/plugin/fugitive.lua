@@ -7,7 +7,7 @@ local function set_keybinds(args)
 end
 
 vim.api.nvim_create_autocmd({ 'FileType' }, {
-      group = 'fugitive',
-      pattern = 'fugitive',
-      callback = set_keybinds
+   group = 'fugitive',
+   pattern = 'fugitive',
+   callback = set_keybinds
 })

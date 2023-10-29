@@ -1,9 +1,9 @@
 require('indent_blankline').setup({
-      -- enabled = false,
-      show_current_context = false,
-      show_current_context_start = false,
-      char_blankline = '┆',
-   })
+   -- enabled = false,
+   show_current_context = false,
+   show_current_context_start = false,
+   char_blankline = '┆',
+})
 
 vim.keymap.set('n', '<leader>id', function()
    vim.cmd('IndentBlanklineDisable')
