@@ -1,5 +1,4 @@
 {
-  "Ionide-vim": { "branch": "master", "commit": "8435bae84b26b602dbb68399661b3989915cc4d3" },
   "LuaSnip": { "branch": "master", "commit": "80a8528f084a97b624ae443a6f50ff8074ba486b" },
   "aerial.nvim": { "branch": "master", "commit": "3a3baf0930444c78d19964fdb401bd3a6a23270f" },
   "catppuccin": { "branch": "main", "commit": "b359f3eec32dcc6b7c9a26901dc235bbb6cd8a0b" },

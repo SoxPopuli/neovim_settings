@@ -50,15 +50,15 @@ local plugins = {
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
 
-    {
-        'ionide/Ionide-vim',
-        config = function()
-            vim.g['fsharp#backend'] = 'disable'
-            vim.g['fsharp#lsp_auto_setup'] = 0
-            vim.g['fsharp#lsp_codelens'] = 0
-            vim.g['fsharp#use_recommended_server_config'] = 0
-        end
-    },
+    --{
+    --    'ionide/Ionide-vim',
+    --    config = function()
+    --        vim.g['fsharp#backend'] = 'disable'
+    --        vim.g['fsharp#lsp_auto_setup'] = 0
+    --        vim.g['fsharp#lsp_codelens'] = 0
+    --        vim.g['fsharp#use_recommended_server_config'] = 0
+    --    end
+    --},
 
     "simrat39/inlay-hints.nvim",
     -- use { 'lvimuser/lsp-inlayhints.nvim' }
