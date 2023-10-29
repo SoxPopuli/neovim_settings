@@ -324,8 +324,6 @@ local function packerStartup(use)
 
 	use({ 'nvim-telescope/telescope-ui-select.nvim', requires = { 'nvim-telescope/telescope.nvim' } })
 
-	use({ 'stevearc/oil.nvim', tag = 'stable' }) -- File Explorer
-
 	use({'nvim-tree/nvim-web-devicons'})
 
 	use({ 'johmsalas/text-case.nvim', requires = { 'nvim-telescope/telescope.nvim'  } })
