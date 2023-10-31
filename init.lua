@@ -74,10 +74,11 @@ set('n', '<A-Up>', '<C-w><Up>', { remap = true })
 set('n', '<A-Down>', '<C-w><Down>', { remap = true })
 set('n', '<A-Left>', '<C-w><Left>', { remap = true })
 set('n', '<A-Right>', '<C-w><Right>', { remap = true })
-set('n', '<A-k>', '<C-w>k')
-set('n', '<A-j>', '<C-w>j')
-set('n', '<A-h>', '<C-w>h')
-set('n', '<A-l>', '<C-w>l')
+
+--set('n', '<A-k>', '<C-w>k')
+--set('n', '<A-j>', '<C-w>j')
+--set('n', '<A-h>', '<C-w>h')
+--set('n', '<A-l>', '<C-w>l')
 
 set('i', '<C-l>', '::')
 set('i', '<S-Tab>', '<C-d>')
@@ -218,3 +219,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- abbreviations
 vim.cmd.iabbrev("stirng string")
 vim.cmd.iabbrev("Stirng String")
+
+
+set("n", "<C-f>", "<cmd>:TermCenter tmux-sessionizer<cr>")
+
