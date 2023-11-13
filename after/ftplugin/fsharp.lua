@@ -1,7 +1,8 @@
 local has_tools, fs_tools = pcall(require, 'fs-tools')
 
+local bufnr = vim.api.nvim_win_get_buf(0)
+
 if has_tools then
-    local bufnr = vim.api.nvim_win_get_buf(0)
 
     vim.keymap.set('n', '<leader>f', function ()
         fs_tools.edit_file_order({ float = true })
@@ -12,7 +13,9 @@ if has_tools then
     end, { buffer = bufnr })
 end
 
+vim.keymap.set('n', '<space>af', function ()
+    vim.cmd([[!dotnet fantomas -r .]])
+end, { buffer = bufnr, desc = "Format workspace with fantomas" })
 
-
-vim.bo.shiftwidth = 4
+--vim.bo.shiftwidth = 4
 vim.cmd.compiler('dotnet')

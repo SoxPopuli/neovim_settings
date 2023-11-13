@@ -5,14 +5,16 @@ if not (has_tree and has_api) then
     return
 end
 
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+--vim.g.loaded_netrw = 1
+--vim.g.loaded_netrwPlugin = 1
 
 tree.setup({
     sort_by = "case_sensitive",
+    disable_netrw = false,
     hijack_netrw = true,
     hijack_unnamed_buffer_when_opening = true,
     hijack_directories = {
+        enable = true,
         auto_open = false,
     },
     diagnostics = {
