@@ -1,368 +1,365 @@
 local M = {}
-local dap = require('lsp.dap')
-local snippets = require('lsp.snippets')
-local codelens = require('lsp.codelens')
+local dap = require("lsp.dap")
+local snippets = require("lsp.snippets")
+local codelens = require("lsp.codelens")
 
-local lspconfig = require('lspconfig')
-local cmp = require('cmp')
-local rt = require('rust-tools')
-local hints = require('inlay-hints')
+local lspconfig = require("lspconfig")
+local cmp = require("cmp")
+local rt = require("rust-tools")
+local hints = require("inlay-hints")
+
+local conform = require("conform")
 
 hints.setup({
-  only_current_line = false,
-  eol = {
-    right_align = false,
-  }
+	only_current_line = false,
+	eol = {
+		right_align = false,
+	},
 })
 
 local function apply_formatting(bufnr)
-  vim.lsp.buf.format({
-    filter = function(client)
-      -- Apply formatting logic here
-      local filetypes = {
-        typescript = "null-ls",
-        fsharp = "null-ls",
-      }
+	local opts = {
+		bufnr = bufnr,
+		async = true,
+		lsp_fallback = true,
+	}
 
-      local ft = vim.bo.filetype
-      -- Use formatter for filetype if specified, else use any formatter available
-      if filetypes[ft] ~= nil then
-        return filetypes[ft] == client.name
-      else
-        return true
-      end
-    end,
-    bufnr = bufnr,
-    async = true,
-  })
+	local bufname = vim.api.nvim_buf_get_name(0)
+
+	vim.notify("Formatting: " .. bufname)
+	conform.format(opts, function ()
+		vim.notify("Formatted: " .. bufname)
+	end)
 end
 
 local function setupKeys()
-  -- Global mappings.
-  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, { desc = "Open diagnostic window" })
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+	-- Global mappings.
+	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+	vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Open diagnostic window" })
+	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 
-  vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Previous error" })
-  vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Next error" })
+	vim.keymap.set("n", "[e", function()
+		vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+	end, { desc = "Previous error" })
+	vim.keymap.set("n", "]e", function()
+		vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+	end, { desc = "Next error" })
 
-  local has_telescope, builtins = pcall(require, 'telescope.builtin')
-  if has_telescope then
-    vim.keymap.set('n', '<space>q', function()
-      builtins.diagnostics()
-    end, { desc = "Show diagnostics" })
-  else
-    vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, { desc = "Show diagnostics" })
-  end
+	local has_telescope, builtins = pcall(require, "telescope.builtin")
+	if has_telescope then
+		vim.keymap.set("n", "<space>q", function()
+			builtins.diagnostics()
+		end, { desc = "Show diagnostics" })
+	else
+		vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Show diagnostics" })
+	end
 end
 
 local function lspOnAttach(client, bufnr)
-  -- Enable completion triggered by <c-x><c-o>
-  vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+	-- Enable completion triggered by <c-x><c-o>
+	vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-  -- Buffer local mappings.
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local opts = { buffer = bufnr }
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration" })
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-  vim.keymap.set('n', '<space>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, opts)
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename" })
-  vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action" })
-  vim.keymap.set('n', '<space>f', function()
-    apply_formatting(bufnr)
-  end, { buffer = bufnr, desc = "Format buffer" })
+	-- Buffer local mappings.
+	-- See `:help vim.lsp.*` for documentation on any of the below functions
+	local opts = { buffer = bufnr }
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration" })
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+	vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
+	vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
+	vim.keymap.set("n", "<space>wl", function()
+		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+	end, opts)
+	vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename" })
+	vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action" })
+	vim.keymap.set("n", "<space>f", function()
+		apply_formatting(bufnr)
+	end, { buffer = bufnr, desc = "Format buffer" })
 
-  local functions = {}
-  local has_telescope, builtins = pcall(require, 'telescope.builtin')
-  if has_telescope then
-    functions = {
-      implementation = builtins.lsp_implementations,
-      symbols = builtins.lsp_dynamic_workspace_symbols,
-      definitions = builtins.lsp_definitions,
-      type_definitions = builtins.lsp_type_definitions,
-      references = builtins.lsp_references,
-    }
-  else
-    functions = {
-      implementation = vim.lsp.buf.implementation,
-      symbols = vim.lsp.buf.workspace_symbol,
-      definitions = vim.lsp.buf.definition,
-      type_definitions = vim.lsp.buf.type_definition,
-      references = vim.lsp.buf.references,
-    }
-  end
-  vim.keymap.set('n', 'gI', functions.implementation, { buffer = bufnr, desc = "Go to implementation" })
-  vim.keymap.set('n', '<space>wq', functions.symbols, { buffer = bufnr, desc = "Show workspace symbols" })
-  vim.keymap.set('n', 'gd', functions.definitions, { buffer = bufnr, desc = "Go to definition" })
-  vim.keymap.set('n', '<space>D', functions.type_definitions, { buffer = bufnr, desc = "Go to type definition" })
-  vim.keymap.set('n', 'gr', functions.references, { buffer = bufnr, desc = "Go to references" })
+	local functions = {}
+	local has_telescope, builtins = pcall(require, "telescope.builtin")
+	if has_telescope then
+		functions = {
+			implementation = builtins.lsp_implementations,
+			symbols = builtins.lsp_dynamic_workspace_symbols,
+			definitions = builtins.lsp_definitions,
+			type_definitions = builtins.lsp_type_definitions,
+			references = builtins.lsp_references,
+		}
+	else
+		functions = {
+			implementation = vim.lsp.buf.implementation,
+			symbols = vim.lsp.buf.workspace_symbol,
+			definitions = vim.lsp.buf.definition,
+			type_definitions = vim.lsp.buf.type_definition,
+			references = vim.lsp.buf.references,
+		}
+	end
+	vim.keymap.set("n", "gI", functions.implementation, { buffer = bufnr, desc = "Go to implementation" })
+	vim.keymap.set("n", "<space>wq", functions.symbols, { buffer = bufnr, desc = "Show workspace symbols" })
+	vim.keymap.set("n", "gd", functions.definitions, { buffer = bufnr, desc = "Go to definition" })
+	vim.keymap.set("n", "<space>D", functions.type_definitions, { buffer = bufnr, desc = "Go to type definition" })
+	vim.keymap.set("n", "gr", functions.references, { buffer = bufnr, desc = "Go to references" })
 
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature help" })
-  -- hints.setup()
-  -- hints.on_attach(client, bufnr)
+	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature help" })
+	-- hints.setup()
+	-- hints.on_attach(client, bufnr)
 end
 
 local function MasonInstallList(list)
-  local pack = require('mason-core.package')
-  local registry = require('mason-registry')
+	local pack = require("mason-core.package")
+	local registry = require("mason-registry")
 
-  for _, name in pairs(list) do
-    local pkg_name, pkg_ver = pack.Parse(name)
-    local pkg = registry.get_package(pkg_name)
-    if pkg:is_installed() == false then
-      print('Installing ' .. pkg_name)
-      pkg:install({ version = pkg_ver })
-    end
-  end
+	for _, name in pairs(list) do
+		local pkg_name, pkg_ver = pack.Parse(name)
+		local pkg = registry.get_package(pkg_name)
+		if pkg:is_installed() == false then
+			print("Installing " .. pkg_name)
+			pkg:install({ version = pkg_ver })
+		end
+	end
 end
 
 local function setupCmp()
-  cmp.setup({
-    snippet = {
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body)
-      end,
-    },
-    window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-space>'] = cmp.mapping.complete(),
-      ['<C-c>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item
+	cmp.setup({
+		snippet = {
+			expand = function(args)
+				require("luasnip").lsp_expand(args.body)
+			end,
+		},
+		window = {
+			completion = cmp.config.window.bordered(),
+			documentation = cmp.config.window.bordered(),
+		},
+		mapping = cmp.mapping.preset.insert({
+			["<C-b>"] = cmp.mapping.scroll_docs(-4),
+			["<C-f>"] = cmp.mapping.scroll_docs(4),
+			["<C-space>"] = cmp.mapping.complete(),
+			["<C-c>"] = cmp.mapping.abort(),
+			["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item
 
-      ['<tab>'] = cmp.mapping.select_next_item(),
-      ['<S-tab>'] = cmp.mapping.select_prev_item(),
+			["<tab>"] = cmp.mapping.select_next_item(),
+			["<S-tab>"] = cmp.mapping.select_prev_item(),
 
-      ['<Down>'] = cmp.mapping.select_next_item(),
-      ['<Up>'] = cmp.mapping.select_prev_item(),
-    }),
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp_signature_help', priority = 10 },
-      { name = 'nvim_lsp',                priority = 5 },
-      { name = 'luasnip',                 priority = 1 },
-    }, {
-      { name = 'buffer' }
-    })
-  })
+			["<Down>"] = cmp.mapping.select_next_item(),
+			["<Up>"] = cmp.mapping.select_prev_item(),
+		}),
+		sources = cmp.config.sources({
+			{ name = "nvim_lsp_signature_help", priority = 10 },
+			{ name = "nvim_lsp", priority = 5 },
+			{ name = "luasnip", priority = 1 },
+		}, {
+			{ name = "buffer" },
+		}),
+	})
 
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
-  })
+	-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+	cmp.setup.cmdline({ "/", "?" }, {
+		mapping = cmp.mapping.preset.cmdline(),
+		sources = {
+			{ name = "buffer" },
+		},
+	})
 
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
+	-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+	cmp.setup.cmdline(":", {
+		mapping = cmp.mapping.preset.cmdline(),
+		sources = cmp.config.sources({
+			{ name = "path" },
+		}, {
+			{ name = "cmdline" },
+		}),
+	})
 end
 
 -- Scala LSP
 local function setupScala(capabilities)
-  local metals_config = require('metals').bare_config()
-  metals_config.settings = {
-    showImplicitArguments = true,
-    showInferredType = true,
-    showImplicitConversionsAndClasses = true,
-    superMethodLensesEnabled = true,
-    enableSemanticHighlighting = true,
-    excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-  }
-  metals_config.init_options.statusBarProvider = "on"
+	local metals_config = require("metals").bare_config()
+	metals_config.settings = {
+		showImplicitArguments = true,
+		showInferredType = true,
+		showImplicitConversionsAndClasses = true,
+		superMethodLensesEnabled = true,
+		enableSemanticHighlighting = true,
+		excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+	}
+	metals_config.init_options.statusBarProvider = "on"
 
-  metals_config.capabilities = capabilities
-  metals_config.on_attach = function(client, bufnr)
-    require('metals').setup_dap()
-    lspOnAttach(client, bufnr)
-  end
+	metals_config.capabilities = capabilities
+	metals_config.on_attach = function(client, bufnr)
+		require("metals").setup_dap()
+		lspOnAttach(client, bufnr)
+	end
 
-  -- Autocmd that will actually be in charging of starting the whole thing
-  local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-  vim.api.nvim_create_autocmd("FileType", {
-    -- NOTE: You may or may not want java included here. You will need it if you
-    -- want basic Java support but it may also conflict if you are using
-    -- something like nvim-jdtls which also works on a java filetype autocmd.
-    pattern = { "scala", "sbt", "java" },
-    callback = function()
-      require("metals").initialize_or_attach(metals_config)
-    end,
-    group = nvim_metals_group,
-  })
+	-- Autocmd that will actually be in charging of starting the whole thing
+	local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+	vim.api.nvim_create_autocmd("FileType", {
+		-- NOTE: You may or may not want java included here. You will need it if you
+		-- want basic Java support but it may also conflict if you are using
+		-- something like nvim-jdtls which also works on a java filetype autocmd.
+		pattern = { "scala", "sbt", "java" },
+		callback = function()
+			require("metals").initialize_or_attach(metals_config)
+		end,
+		group = nvim_metals_group,
+	})
 end
 
 function M.setup()
-  setupCmp()
-  setupKeys()
+	setupCmp()
+	setupKeys()
 
-  -- Setup custom snippets - only once though
-  if SnippetsInit ~= true then
-    snippets.addSnippets()
-    SnippetsInit = true
-  end
+	-- Setup custom snippets - only once though
+	if SnippetsInit ~= true then
+		snippets.addSnippets()
+		SnippetsInit = true
+	end
 
-  -- Set up lspconfig.
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+	-- Set up lspconfig.
+	local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-  -- Setup Installer
-  require('mason').setup()
-  require('mason-lspconfig').setup({
-    ensure_installed = {
-      'lua_ls',
-      'rust_analyzer',
-      'elmls',
-      'jsonls',
-      'html',
-      'cssls',
-      'lemminx',
-      'fsautocomplete',
-      'yamlls',
-      'marksman',
-      'tsserver',
-      'omnisharp',
-      'rescriptls',
-    }
-  })
+	-- Setup Installer
+	require("mason").setup()
+	require("mason-lspconfig").setup({
+		ensure_installed = {
+			"lua_ls",
+			"rust_analyzer",
+			"elmls",
+			"jsonls",
+			"html",
+			"cssls",
+			"lemminx",
+			"fsautocomplete",
+			"yamlls",
+			"marksman",
+			"tsserver",
+			"omnisharp",
+			"rescriptls",
+		},
+	})
 
-  MasonInstallList({
-    -- DAP Providers
-    'netcoredbg',
+	MasonInstallList({
+		-- DAP Providers
+		"netcoredbg",
 
-    -- Linters
-    'fantomas',
-    'prettier',
-    'stylua',
-    'eslint_d',
-    'luacheck',
-  })
+		-- Linters
+		"fantomas",
+		"prettier",
+		"stylua",
+		"eslint_d",
+		"luacheck",
+	})
 
-  local function defaultSetup(server)
-    server.setup({
-      on_attach = lspOnAttach,
-      flags = {
-        debounce_text_changes = 300,
-      },
-      capabilities = capabilities
-    })
-  end
+	local function defaultSetup(server)
+		server.setup({
+			on_attach = lspOnAttach,
+			flags = {
+				debounce_text_changes = 300,
+			},
+			capabilities = capabilities,
+		})
+	end
 
-  defaultSetup(lspconfig.jsonls)
-  defaultSetup(lspconfig.elmls)
-  defaultSetup(lspconfig.html)
-  defaultSetup(lspconfig.cssls)
-  defaultSetup(lspconfig.yamlls)
-  defaultSetup(lspconfig.marksman)
-  defaultSetup(lspconfig.tsserver)
-  defaultSetup(lspconfig.omnisharp)
-  defaultSetup(lspconfig.rescriptls)
+	defaultSetup(lspconfig.jsonls)
+	defaultSetup(lspconfig.elmls)
+	defaultSetup(lspconfig.html)
+	defaultSetup(lspconfig.cssls)
+	defaultSetup(lspconfig.yamlls)
+	defaultSetup(lspconfig.marksman)
+	defaultSetup(lspconfig.tsserver)
+	defaultSetup(lspconfig.omnisharp)
+	defaultSetup(lspconfig.rescriptls)
 
-  lspconfig.ocamllsp.setup({
-    on_attach = function(client, bufnr)
-      lspOnAttach(client, bufnr)
-      codelens.setup_codelens_refresh(bufnr)
-    end,
-    capabilities = capabilities,
-    get_language_id = function(_, ftype) return ftype end,
-    settings = {
-      extendedHover = { enable = true },
-      codelens = { enable = true },
-    }
-  })
+	lspconfig.ocamllsp.setup({
+		on_attach = function(client, bufnr)
+			lspOnAttach(client, bufnr)
+			codelens.setup_codelens_refresh(bufnr)
+		end,
+		capabilities = capabilities,
+		get_language_id = function(_, ftype)
+			return ftype
+		end,
+		settings = {
+			extendedHover = { enable = true },
+			codelens = { enable = true },
+		},
+	})
 
-  rt.setup({
-    server = {
-      on_attach = function(client, bufnr)
-        -- Hover actions
-        vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-        -- Code action groups
-        vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+	rt.setup({
+		server = {
+			on_attach = function(client, bufnr)
+				-- Hover actions
+				vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+				-- Code action groups
+				vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
 
-        lspOnAttach(client, bufnr)
-      end
-    }
-  })
+				lspOnAttach(client, bufnr)
+			end,
+		},
+	})
 
-  lspconfig.fsautocomplete.setup({
-    on_attach = function(client, bufnr)
-      lspOnAttach(client, bufnr)
-      codelens.setup_codelens_refresh(bufnr)
-      -- hints.on_attach(client, bufnr)
-    end,
-    capabilities = capabilities,
-    settings = {
-      FSharp = {
-        keywordsAutocomplete = false,
-        ExternalAutocomplete = false,
-        Linter = true,
-        UnionCaseStubGeneration = true,
-        UnionCaseStubGenerationBody = 'failwith "todo"',
-        RecordStubGeneration = true,
-        RecordStubGenerationBody = 'failwith "todo"',
-        InterfaceStubGeneration = true,
-        InterfaceStubGenerationBody = 'failwith "todo"',
-        InterfaceStubGenerationObjectIdentifier = 'this',
-        ResolveNamespaces = true,
-        SimplifyNameAnalyzer = true,
-        UnusedOpensAnalyzer = true,
-        UnusedDeclarationsAnalyzer = true,
-        CodeLenses = { Signature = { Enabled = true }, References = { Enabled = true } },
-        LineLens = { Enabled = "always", Prefix = "" },
-        PipelineHints = { Enabled = true, Prefix = "" }
-      }
-    },
-  })
+	lspconfig.fsautocomplete.setup({
+		on_attach = function(client, bufnr)
+			lspOnAttach(client, bufnr)
+			codelens.setup_codelens_refresh(bufnr)
+			-- hints.on_attach(client, bufnr)
+		end,
+		capabilities = capabilities,
+		settings = {
+			FSharp = {
+				keywordsAutocomplete = false,
+				ExternalAutocomplete = false,
+				Linter = true,
+				UnionCaseStubGeneration = true,
+				UnionCaseStubGenerationBody = 'failwith "todo"',
+				RecordStubGeneration = true,
+				RecordStubGenerationBody = 'failwith "todo"',
+				InterfaceStubGeneration = true,
+				InterfaceStubGenerationBody = 'failwith "todo"',
+				InterfaceStubGenerationObjectIdentifier = "this",
+				ResolveNamespaces = true,
+				SimplifyNameAnalyzer = true,
+				UnusedOpensAnalyzer = true,
+				UnusedDeclarationsAnalyzer = true,
+				CodeLenses = { Signature = { Enabled = true }, References = { Enabled = true } },
+				LineLens = { Enabled = "always", Prefix = "" },
+				PipelineHints = { Enabled = true, Prefix = "" },
+			},
+		},
+	})
 
-  lspconfig.lemminx.setup({
-    on_attach = lspOnAttach,
-    capabilities = capabilities,
-    settings = {
-      xml = {
-        completion = { autoCloseTags = true },
-        validation = { noGrammar = "ignore" }
-      }
-    },
-  })
+	lspconfig.lemminx.setup({
+		on_attach = lspOnAttach,
+		capabilities = capabilities,
+		settings = {
+			xml = {
+				completion = { autoCloseTags = true },
+				validation = { noGrammar = "ignore" },
+			},
+		},
+	})
 
-  lspconfig.lua_ls.setup {
-    on_attach = lspOnAttach,
-    settings = {
-      filetypes = { 'lua' },
-      Lua = {
-        hint = { enable = true },
-        runtime = { version = 'LuaJIT' },
-        diagnostics = { globals = { 'vim' } },
-        semantic = { enable = false }, -- Disable semantic highlighting, treesitter is better imo
-        capabilities = capabilities,
-      }
-    }
-  }
+	lspconfig.lua_ls.setup({
+		on_attach = lspOnAttach,
+		settings = {
+			filetypes = { "lua" },
+			Lua = {
+				hint = { enable = true },
+				runtime = { version = "LuaJIT" },
+				diagnostics = { globals = { "vim" } },
+				semantic = { enable = false }, -- Disable semantic highlighting, treesitter is better imo
+				capabilities = capabilities,
+			},
+		},
+	})
 
-  setupScala(capabilities)
+	setupScala(capabilities)
 
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-    vim.lsp.handlers.hover,
-    { border = "rounded" }
-  )
-  dap.config()
-  dap.bindKeys()
+	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+	dap.config()
+	dap.bindKeys()
 end
 
-require('vim.lsp.codelens').on_codelens =
-    codelens.codelens_fix()
+require("vim.lsp.codelens").on_codelens = codelens.codelens_fix()
 
 return M

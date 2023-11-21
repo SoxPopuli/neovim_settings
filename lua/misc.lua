@@ -8,6 +8,9 @@ function M.pathSep()
     end
 end
 
+---comment
+---@param p string[]
+---@return string
 function M.buildPath(p)
     local sep = M.pathSep()
 

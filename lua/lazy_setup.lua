@@ -22,15 +22,6 @@ local plugins = {
     { import = "plugins" },
 
     "nvim-lualine/lualine.nvim",
-    {
-        "j-hui/fidget.nvim",
-        branch = "legacy",
-        config = function()
-            require("fidget").setup({
-                text = { spinner = "bouncing_ball" }
-            })
-        end,
-    },
 
     "tpope/vim-surround",
     "tpope/vim-repeat",
@@ -116,20 +107,6 @@ local plugins = {
 
     -- tmux integration
     "aserowy/tmux.nvim",
-
-    {
-        "jose-elias-alvarez/null-ls.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            local null_ls = require("null-ls")
-            null_ls.setup({
-                sources = {
-                    null_ls.builtins.formatting.fantomas,
-                    null_ls.builtins.formatting.prettier,
-                },
-            })
-        end,
-    },
 
     -- Async linting
     'mfussenegger/nvim-lint',
