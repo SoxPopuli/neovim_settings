@@ -51,4 +51,18 @@ function M.getArgs(fn)
     return args
 end
 
+
+---Check if an item in list matches predicate
+---@param list any[]
+---@param pred fun(item: any): boolean
+function M.contains(list, pred)
+    for _, value in pairs(list) do
+        if pred(value) then
+            return true
+        end
+    end
+
+    return false
+end
+
 return M

@@ -1,4 +1,5 @@
 local M = {}
+local misc = require("misc")
 local dap = require("lsp.dap")
 local snippets = require("lsp.snippets")
 local codelens = require("lsp.codelens")
@@ -27,7 +28,7 @@ local function apply_formatting(bufnr)
 	local bufname = vim.api.nvim_buf_get_name(0)
 
 	vim.notify("Formatting: " .. bufname)
-	conform.format(opts, function ()
+	conform.format(opts, function()
 		vim.notify("Formatted: " .. bufname)
 	end)
 end
@@ -71,7 +72,16 @@ local function lspOnAttach(client, bufnr)
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end, opts)
 	vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename" })
-	vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action" })
+
+    -- Don't override octo add comment keymap
+    -- if it already exists
+	local keymaps = vim.api.nvim_buf_get_keymap(bufnr, "n")
+	if not misc.contains(keymaps, function(item)
+		return item.lhs == " ca"
+	end) then
+		vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action" })
+	end
+
 	vim.keymap.set("n", "<space>f", function()
 		apply_formatting(bufnr)
 	end, { buffer = bufnr, desc = "Format buffer" })

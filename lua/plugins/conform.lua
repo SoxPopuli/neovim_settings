@@ -17,12 +17,13 @@ return {
 		formatters = {
 			fantomas = {
 				command = path("fantomas"),
+                args = { '$FILENAME' },
 			},
 		},
 
 		formatters_by_ft = {
 			lua = { "stylua" },
-			-- fsharp = { "fantomas" },
+			--fsharp = { "fantomas" },
 		},
 	},
 }

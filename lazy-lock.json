@@ -32,6 +32,7 @@
   "nvim-tree.lua": { "branch": "master", "commit": "8c534822a7d16c83cf69928c53e1d8a13bd2734a" },
   "nvim-treesitter": { "branch": "master", "commit": "7da3cb6323d1e1fbfc4d7dc05cac74946458b8a0" },
   "nvim-web-devicons": { "branch": "master", "commit": "cdbcca210cf3655aa9b31ebf2422763ecd85ee5c" },
+  "octo.nvim": { "branch": "master", "commit": "5d6bed660ff18878a9096b3acef9c444b85021ac" },
   "overseer.nvim": { "branch": "master", "commit": "6f462a61ce9a5f47743cbf78454bed14a855eb03" },
   "plenary.nvim": { "branch": "master", "commit": "50012918b2fc8357b87cff2a7f7f0446e47da174" },
   "rainbow-delimiters.nvim": { "branch": "master", "commit": "c6dce365e647162ae0031c1f814053beaf3dd843" },
