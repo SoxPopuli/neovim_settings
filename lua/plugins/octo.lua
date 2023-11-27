@@ -8,7 +8,11 @@ return {
   opts = {
       use_local_fs = true,
 
-      mappings = {}
+      ssh_aliases = {
+          ["github.com-TM"] = "github.com"
+      },
+
+      mappings = {},
   },
 
   cmd = {
