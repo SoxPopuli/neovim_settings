@@ -30,7 +30,7 @@ local ms = ls.multi_snippet
 local k = require("luasnip.nodes.key_indexer").new_key
 -- 
 
-function M.addSnippets()
+function M.add_snippets()
     ls.add_snippets("ocaml", {
         s('module', fmt([[
         module {} = struct

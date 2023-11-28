@@ -1,7 +1,7 @@
 return {
     'johmsalas/text-case.nvim',
     dependencies = 'nvim-telescope/telescope.nvim',
-    lazy = false,
+    lazy = true,
     keys = {
         { 'ga.', '<cmd>TextCaseOpenTelescope<CR>',            mode = 'n',                     desc = "Telescope" },
         { 'ga.', "<cmd>TextCaseOpenTelescope<CR>",            mode = 'v',                     desc = "Telescope" },

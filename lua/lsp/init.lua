@@ -36,7 +36,7 @@ local function apply_formatting(bufnr)
 	end)
 end
 
-local function setupKeys()
+local function setup_keys()
 	-- Global mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 	vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Open diagnostic window" })
@@ -60,7 +60,7 @@ local function setupKeys()
 	end
 end
 
-local function lspOnAttach(client, bufnr)
+local function lsp_on_attach(client, bufnr)
 	-- Enable completion triggered by <c-x><c-o>
 	vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
@@ -119,7 +119,7 @@ local function lspOnAttach(client, bufnr)
 	-- hints.on_attach(client, bufnr)
 end
 
-local function MasonInstallList(list)
+local function mason_install_list(list)
 	local pack = require("mason-core.package")
 	local registry = require("mason-registry")
 
@@ -133,7 +133,7 @@ local function MasonInstallList(list)
 	end
 end
 
-local function setupCmp()
+local function setup_cmp()
 	cmp.setup({
 		snippet = {
 			expand = function(args)
@@ -201,7 +201,7 @@ local function setupScala(capabilities)
 	metals_config.capabilities = capabilities
 	metals_config.on_attach = function(client, bufnr)
 		require("metals").setup_dap()
-		lspOnAttach(client, bufnr)
+		lsp_on_attach(client, bufnr)
 	end
 
 	-- Autocmd that will actually be in charging of starting the whole thing
@@ -219,12 +219,12 @@ local function setupScala(capabilities)
 end
 
 function M.setup()
-	setupCmp()
-	setupKeys()
+	setup_cmp()
+	setup_keys()
 
 	-- Setup custom snippets - only once though
 	if SnippetsInit ~= true then
-		snippets.addSnippets()
+		snippets.add_snippets()
 		SnippetsInit = true
 	end
 
@@ -251,7 +251,7 @@ function M.setup()
 		},
 	})
 
-	MasonInstallList({
+	mason_install_list({
 		-- DAP Providers
 		"netcoredbg",
 
@@ -263,9 +263,9 @@ function M.setup()
 		"luacheck",
 	})
 
-	local function defaultSetup(server)
+	local function default_setup(server)
 		server.setup({
-			on_attach = lspOnAttach,
+			on_attach = lsp_on_attach,
 			flags = {
 				debounce_text_changes = 300,
 			},
@@ -273,19 +273,19 @@ function M.setup()
 		})
 	end
 
-	defaultSetup(lspconfig.jsonls)
-	defaultSetup(lspconfig.elmls)
-	defaultSetup(lspconfig.html)
-	defaultSetup(lspconfig.cssls)
-	defaultSetup(lspconfig.yamlls)
-	defaultSetup(lspconfig.marksman)
-	defaultSetup(lspconfig.tsserver)
-	defaultSetup(lspconfig.csharp_ls)
-	defaultSetup(lspconfig.rescriptls)
+	default_setup(lspconfig.jsonls)
+	default_setup(lspconfig.elmls)
+	default_setup(lspconfig.html)
+	default_setup(lspconfig.cssls)
+	default_setup(lspconfig.yamlls)
+	default_setup(lspconfig.marksman)
+	default_setup(lspconfig.tsserver)
+	default_setup(lspconfig.csharp_ls)
+	default_setup(lspconfig.rescriptls)
 
 	lspconfig.ocamllsp.setup({
 		on_attach = function(client, bufnr)
-			lspOnAttach(client, bufnr)
+			lsp_on_attach(client, bufnr)
 			codelens.setup_codelens_refresh(bufnr)
 		end,
 		capabilities = capabilities,
@@ -306,14 +306,14 @@ function M.setup()
 				-- Code action groups
 				vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
 
-				lspOnAttach(client, bufnr)
+				lsp_on_attach(client, bufnr)
 			end,
 		},
 	})
 
 	lspconfig.fsautocomplete.setup({
 		on_attach = function(client, bufnr)
-			lspOnAttach(client, bufnr)
+			lsp_on_attach(client, bufnr)
 			codelens.setup_codelens_refresh(bufnr)
 			-- hints.on_attach(client, bufnr)
 		end,
@@ -342,7 +342,7 @@ function M.setup()
 	})
 
 	lspconfig.lemminx.setup({
-		on_attach = lspOnAttach,
+		on_attach = lsp_on_attach,
 		capabilities = capabilities,
 		settings = {
 			xml = {
@@ -353,7 +353,7 @@ function M.setup()
 	})
 
 	lspconfig.lua_ls.setup({
-		on_attach = lspOnAttach,
+		on_attach = lsp_on_attach,
 		settings = {
 			filetypes = { "lua" },
 			Lua = {
