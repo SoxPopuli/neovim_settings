@@ -50,6 +50,8 @@ vim.o.cursorline = true
 
 vim.o.foldlevel = 16
 
+vim.o.fixeol = false -- Preserve original end of line status
+
 -- Keybinds
 local set = vim.keymap.set
 
