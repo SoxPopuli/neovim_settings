@@ -9,8 +9,6 @@ local cmp = require("cmp")
 local rt = require("rust-tools")
 local hints = require("inlay-hints")
 
-local conform = require("conform")
-
 hints.setup({
 	only_current_line = false,
 	eol = {
@@ -19,6 +17,8 @@ hints.setup({
 })
 
 local function apply_formatting(bufnr)
+	local conform = require("conform")
+
 	local opts = {
 		bufnr = bufnr,
 		async = true,
@@ -73,8 +73,8 @@ local function lspOnAttach(client, bufnr)
 	end, opts)
 	vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename" })
 
-    -- Don't override octo add comment keymap
-    -- if it already exists
+	-- Don't override octo add comment keymap
+	-- if it already exists
 	local keymaps = vim.api.nvim_buf_get_keymap(bufnr, "n")
 	if not misc.contains(keymaps, function(item)
 		return item.lhs == " ca"
