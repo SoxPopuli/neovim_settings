@@ -10,7 +10,7 @@
   "cmp_luasnip": { "branch": "master", "commit": "05a9ab28b53f71d1aece421ef32fee2cb857a843" },
   "conform.nvim": { "branch": "master", "commit": "eddd6431370814caacec1d1e3c7d6d95d41b133d" },
   "dracula": { "branch": "master", "commit": "6495b4ff40479ec7705addb4ea800ec308026648" },
-  "fidget.nvim": { "branch": "main", "commit": "5eb5bf68bcdcd45940ad3d7155c0630476ee63cc" },
+  "fidget.nvim": { "branch": "dynamic_positioning", "commit": "9205e9e3e95c256c9686b41e76426a45c4feaca0" },
   "fsharp-tools.nvim": { "branch": "main", "commit": "26be10789b4a08891e258b1e5a23c4e7e2ab7fbe" },
   "gh.nvim": { "branch": "main", "commit": "509e19660cbe5b06f0e43ca1ad5ed98f281c2c95" },
   "indent-blankline.nvim": { "branch": "master", "commit": "9637670896b68805430e2f72cf5d16be5b97a22a" },
