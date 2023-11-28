@@ -55,13 +55,12 @@ local function get_window_position()
 end
 
 return {
-	"j-hui/fidget.nvim",
+	"SoxPopuli/fidget.nvim",
+    branch = "dynamic_positioning",
 
 	config = function(_, opts)
 		local fidget = require("fidget")
-
-		require("fidget.notification.window").get_window_position = get_window_position
-
+		--require("fidget.notification.window").get_window_position = get_window_position
 		fidget.setup(opts)
 	end,
 
@@ -96,12 +95,12 @@ return {
 				normal_hl = "String",
 				winblend = 0,
 				border = "rounded",
-				align_bottom = false,
+				align = "avoid_cursor",
 			},
 		},
 
 		logger = {
-			level = vim.log.levels.INFO,
+			level = vim.log.levels.WARN,
 		},
 	},
 }
