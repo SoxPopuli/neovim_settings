@@ -148,6 +148,14 @@ set({ 'n', 'v' }, '<leader>v', function ()
     end
 end, { desc = "Toggle virtual edit" })
 
+set('n', '<space>*', function ()
+    local word = vim.fn.expand('<cWORD>')
+    vim.cmd('/' .. word)
+    vim.api.nvim_feedkeys('n', 'n', true)
+end, { desc = "Search whole word" })
+
+set('v', '<space>/', [[y/<C-r>0<CR>]], { desc = "Search for selection" })
+
 -- Set indent level keymap
 set('n', '<leader>s', function ()
     local count = vim.v.count
