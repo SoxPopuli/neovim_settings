@@ -27,9 +27,12 @@ local function apply_formatting(bufnr)
 
 	local bufname = vim.api.nvim_buf_get_name(0)
 
-	vim.notify("Formatting: " .. bufname)
+	local notify_level = vim.log.levels.INFO
+	local notify_key = "formatting-key"
+
+	vim.notify(bufname, notify_level, { key = notify_key, annote = "Formatting" })
 	conform.format(opts, function()
-		vim.notify("Formatted: " .. bufname)
+		vim.notify(bufname, notify_level, { key = notify_key, annote = "Formatted" })
 	end)
 end
 
