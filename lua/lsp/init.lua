@@ -243,7 +243,7 @@ function M.setup()
 			"yamlls",
 			"marksman",
 			"tsserver",
-			"omnisharp",
+			"csharp_ls",
 			"rescriptls",
 		},
 	})
@@ -277,7 +277,7 @@ function M.setup()
 	defaultSetup(lspconfig.yamlls)
 	defaultSetup(lspconfig.marksman)
 	defaultSetup(lspconfig.tsserver)
-	defaultSetup(lspconfig.omnisharp)
+	defaultSetup(lspconfig.csharp_ls)
 	defaultSetup(lspconfig.rescriptls)
 
 	lspconfig.ocamllsp.setup({
