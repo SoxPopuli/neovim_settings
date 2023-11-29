@@ -175,18 +175,25 @@ if vim.fn.has("mac") then
 	set("n", "gx", '<cmd>:silent exec "!open <cWORD>"<cr>', { silent = true })
 end
 
+local function system_noeol(cmd, input)
+	local result = vim.fn.system(cmd, input)
+	local len = string.len(result)
+
+	return string.sub(result, 1, len - 1)
+end
+
 vim.api.nvim_create_user_command("GitLastActionStatus", function()
 	--gh run list --branch $(git branch --show-current) -L 1 --json "status"
-	local is_git_repo = vim.fn.system("git rev-parse --is-inside-work-tree") == "true"
+	local is_git_repo = string.sub(system_noeol("git rev-parse --is-inside-work-tree"), 1, 4) == "true"
 	if is_git_repo then
-		local current_branch = vim.fn.system("git branch --show-current")
-		local statuses = vim.fn.system("gh run list --branch " .. current_branch .. " -L 1 --json 'status'")
+		local current_branch = system_noeol("git branch --show-current")
+		local statuses = system_noeol("gh run list --branch " .. current_branch .. " -L 1 --json 'status'")
 		statuses = vim.json.decode(statuses)
 
 		if #statuses == 0 then
 			vim.notify("No actions found", vim.log.levels.INFO, { annote = "GH Actions" })
 		else
-			vim.notify(statuses[1], vim.log.levels.INFO, { annote = "GH Actions" })
+			vim.notify(statuses[1].status, vim.log.levels.INFO, { annote = "GH Actions" })
 		end
 	else
 		vim.notify("No repo found", vim.log.levels.INFO, { annote = "GH Actions" })
