@@ -16,26 +16,6 @@ hints.setup({
 	},
 })
 
-local function apply_formatting(bufnr)
-	local conform = require("conform")
-
-	local opts = {
-		bufnr = bufnr,
-		async = true,
-		lsp_fallback = true,
-	}
-
-	local bufname = vim.api.nvim_buf_get_name(0)
-
-	local notify_level = vim.log.levels.INFO
-	local notify_key = "formatting-key"
-
-	vim.notify(bufname, notify_level, { key = notify_key, annote = "Formatting" })
-	conform.format(opts, function()
-		vim.notify(bufname, notify_level, { key = notify_key, annote = "Formatted" })
-	end)
-end
-
 local function setup_keys()
 	-- Global mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -84,10 +64,6 @@ local function lsp_on_attach(client, bufnr)
 	end) then
 		vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action" })
 	end
-
-	vim.keymap.set("n", "<space>f", function()
-		apply_formatting(bufnr)
-	end, { buffer = bufnr, desc = "Format buffer" })
 
 	local functions = {}
 	local has_telescope, builtins = pcall(require, "telescope.builtin")
