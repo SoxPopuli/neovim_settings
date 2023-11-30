@@ -258,6 +258,7 @@ function M.setup()
 	default_setup(lspconfig.tsserver)
 	default_setup(lspconfig.csharp_ls)
 	default_setup(lspconfig.rescriptls)
+    default_setup(lspconfig.uiua)
 
 	lspconfig.ocamllsp.setup({
 		on_attach = function(client, bufnr)
