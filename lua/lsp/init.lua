@@ -90,7 +90,7 @@ local function lsp_on_attach(client, bufnr)
 	vim.keymap.set("n", "<space>D", functions.type_definitions, { buffer = bufnr, desc = "Go to type definition" })
 	vim.keymap.set("n", "gr", functions.references, { buffer = bufnr, desc = "Go to references" })
 
-	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature help" })
+	vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature help" })
 	-- hints.setup()
 	-- hints.on_attach(client, bufnr)
 end
