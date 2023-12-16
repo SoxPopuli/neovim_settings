@@ -126,4 +126,13 @@ function M.config()
 	}
 end
 
+vim.api.nvim_create_user_command("DapLoadLaunchJSON", function(_)
+	local mappings = {
+		codelldb = { "c", "cpp", "rust" },
+		coreclr = { "cs", "fsharp", "vb" },
+	}
+
+	require("dap.ext.vscode").load_launchjs(nil, mappings)
+end, { force = true, desc = "Load debug config from .vscode/launch.json" })
+
 return M
