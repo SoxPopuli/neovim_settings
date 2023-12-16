@@ -20,14 +20,14 @@ local function apply_formatting(bufnr)
 	end)
 end
 
-local formatter_path = misc.buildPath({
+local formatter_path = misc.build_path({
 	vim.fn.stdpath("data"),
 	"mason",
 	"bin",
 })
 
 local function path(name)
-	return misc.buildPath({ formatter_path, name })
+	return misc.build_path({ formatter_path, name })
 end
 
 return {
@@ -45,6 +45,8 @@ return {
 			lua = { "stylua" },
 			javascript = { { "prettierd", "prettier" } },
 			typescript = { { "prettierd", "prettier" } },
+			javascriptreact = { { "prettierd", "prettier" } },
+			typescriptreact = { { "prettierd", "prettier" } },
 			--fsharp = { "fantomas" },
 		},
 	},

@@ -11,7 +11,7 @@ end
 ---comment
 ---@param p string[]
 ---@return string
-function M.buildPath(p)
+function M.build_path(p)
     local sep = M.pathSep()
 
     local parts = p or {}
