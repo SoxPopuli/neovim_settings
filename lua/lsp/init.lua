@@ -225,6 +225,7 @@ function M.setup()
 			"csharp_ls",
 			"rescriptls",
             "clangd",
+            "kotlin_language_server",
 		},
 	})
 
@@ -240,33 +241,43 @@ function M.setup()
 		"luacheck",
 	})
 
-	local function default_setup(server)
-		server.setup({
-			on_attach = lsp_on_attach,
-			flags = {
-				debounce_text_changes = 300,
-			},
-			capabilities = capabilities,
-		})
-	end
+    ---@param lsp { setup: fun(config: table) }
+    ---@param config table | nil
+    local function setup_with_defaults(lsp, config)
+        local defaults = {
+            on_attach = lsp_on_attach,
+            flags = {
+                debounce_text_changes = 300,
+            },
+            capabilities = capabilities,
+        }
 
-	default_setup(lspconfig.jsonls)
-	default_setup(lspconfig.elmls)
-	default_setup(lspconfig.html)
-	default_setup(lspconfig.cssls)
-	default_setup(lspconfig.yamlls)
-	default_setup(lspconfig.marksman)
-	default_setup(lspconfig.tsserver)
-	default_setup(lspconfig.csharp_ls)
-	default_setup(lspconfig.rescriptls)
-	default_setup(lspconfig.clangd)
+        if config ~= nil then
+            config = vim.tbl_deep_extend("force", defaults, config)
+        else
+            config = defaults
+        end
 
-	lspconfig.ocamllsp.setup({
+        lsp.setup(config)
+    end
+
+	setup_with_defaults(lspconfig.jsonls)
+	setup_with_defaults(lspconfig.elmls)
+	setup_with_defaults(lspconfig.html)
+	setup_with_defaults(lspconfig.cssls)
+	setup_with_defaults(lspconfig.yamlls)
+	setup_with_defaults(lspconfig.marksman)
+	setup_with_defaults(lspconfig.tsserver)
+	setup_with_defaults(lspconfig.csharp_ls)
+	setup_with_defaults(lspconfig.rescriptls)
+	setup_with_defaults(lspconfig.clangd)
+	setup_with_defaults(lspconfig.kotlin_language_server)
+    
+	setup_with_defaults(lspconfig.ocamllsp, {
 		on_attach = function(client, bufnr)
 			lsp_on_attach(client, bufnr)
 			codelens.setup_codelens_refresh(bufnr)
 		end,
-		capabilities = capabilities,
 		get_language_id = function(_, ftype)
 			return ftype
 		end,
@@ -289,13 +300,12 @@ function M.setup()
 		},
 	})
 
-	lspconfig.fsautocomplete.setup({
+ 	setup_with_defaults(lspconfig.fsautocomplete, {
 		on_attach = function(client, bufnr)
 			lsp_on_attach(client, bufnr)
 			codelens.setup_codelens_refresh(bufnr)
 			-- hints.on_attach(client, bufnr)
 		end,
-		capabilities = capabilities,
 		settings = {
 			FSharp = {
 				keywordsAutocomplete = false,
@@ -319,9 +329,7 @@ function M.setup()
 		},
 	})
 
-	lspconfig.lemminx.setup({
-		on_attach = lsp_on_attach,
-		capabilities = capabilities,
+	setup_with_defaults(lspconfig.lemminx, {
 		settings = {
 			xml = {
 				completion = { autoCloseTags = true },
