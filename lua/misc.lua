@@ -1,6 +1,6 @@
 local M = {}
 
-function M.pathSep()
+function M.path_sep()
     if vim.fn.has('win32') == 1 then
         return [[\]]
     else
@@ -12,7 +12,7 @@ end
 ---@param p string[]
 ---@return string
 function M.build_path(p)
-    local sep = M.pathSep()
+    local sep = M.path_sep()
 
     local parts = p or {}
     local path = parts[1] or ""
@@ -26,7 +26,7 @@ function M.build_path(p)
     return path
 end
 
-function M.getArgs(fn)
+function M.get_args(fn)
     local args = {}
     local hook = debug.gethook()
 
