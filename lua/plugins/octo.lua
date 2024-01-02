@@ -6,16 +6,16 @@ return {
     'nvim-tree/nvim-web-devicons',
   },
   opts = {
-      use_local_fs = true,
+    use_local_fs = true,
 
-      ssh_aliases = {
-          ["github.com-TM"] = "github.com"
-      },
+    ssh_aliases = {
+      ['github.com-TM'] = 'github.com',
+    },
 
-      mappings = {},
+    mappings = {},
   },
 
   cmd = {
-      "Octo"
+    'Octo',
   },
 }

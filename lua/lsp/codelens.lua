@@ -34,9 +34,7 @@ local function resolve_lenses(lenses, bufnr, client_id, callback)
 end
 
 -- Move codelens from eol to above
-local function redirect_codelens()
-  
-end
+local function redirect_codelens() end
 
 function M.codelens_fix()
   local codelens = require('vim.lsp.codelens')
@@ -56,7 +54,7 @@ function M.codelens_fix()
 end
 
 function M.setup_codelens_refresh(bufnr)
-  api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter", "CursorHold" }, {
+  api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'BufEnter', 'CursorHold' }, {
     callback = function(_)
       vim.lsp.codelens.refresh()
     end,

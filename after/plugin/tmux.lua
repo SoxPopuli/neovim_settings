@@ -1,12 +1,12 @@
-local tmux = require("tmux")
+local tmux = require('tmux')
 tmux.setup({
-    copy_sync = { enable = false },
-    navigation = { enable_default_keybindings = false },
-    resize = { enable_default_keybindings = false },
+  copy_sync = { enable = false },
+  navigation = { enable_default_keybindings = false },
+  resize = { enable_default_keybindings = false },
 })
 
-local map = function (key, fn)
-    vim.keymap.set('n', key, fn, { remap = false })
+local map = function(key, fn)
+  vim.keymap.set('n', key, fn, { remap = false })
 end
 
 map('<A-h>', tmux.move_left)
