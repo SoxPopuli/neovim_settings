@@ -116,13 +116,6 @@ local plugins = {
         version = 'v2.20.8',
     },
 
-    {
-        'ldelossa/gh.nvim',
-        dependencies = { { 'ldelossa/litee.nvim' } }
-    },
-
-
-    { 'nvim-telescope/telescope-ui-select.nvim', dependencies = 'nvim-telescope/telescope.nvim', lazy = true },
     { 'nvim-tree/nvim-web-devicons',             lazy = true },
     { 'rescript-lang/vim-rescript',              ft = 'rescript' },
 

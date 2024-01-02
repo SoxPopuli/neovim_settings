@@ -30,17 +30,16 @@ local function setup_keys()
 		vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
 	end, { desc = "Next error" })
 
-	local has_telescope, builtins = pcall(require, "telescope.builtin")
-	if has_telescope then
-		vim.keymap.set("n", "<space>q", function()
-			builtins.diagnostics()
-		end, { desc = "Show diagnostics" })
-	else
-		vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Show diagnostics" })
-	end
+    vim.keymap.set("n", "<space>q", function()
+        require('telescope.builtin').diagnostics()
+    end, { desc = "Show diagnostics" })
+
+    vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Show diagnostics" })
 end
 
-local function lsp_on_attach(client, bufnr)
+---@param _ number
+---@param bufnr number
+function M.lsp_on_attach(_, bufnr)
 	-- Enable completion triggered by <c-x><c-o>
 	vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
@@ -162,7 +161,7 @@ local function setup_cmp()
 end
 
 -- Scala LSP
-local function setupScala(capabilities)
+local function setup_scala(capabilities)
 	local metals_config = require("metals").bare_config()
 	metals_config.settings = {
 		showImplicitArguments = true,
@@ -177,7 +176,7 @@ local function setupScala(capabilities)
 	metals_config.capabilities = capabilities
 	metals_config.on_attach = function(client, bufnr)
 		require("metals").setup_dap()
-		lsp_on_attach(client, bufnr)
+		M.lsp_on_attach(client, bufnr)
 	end
 
 	-- Autocmd that will actually be in charging of starting the whole thing
@@ -224,8 +223,8 @@ function M.setup()
 			"tsserver",
 			"csharp_ls",
 			"rescriptls",
-            "clangd",
-            "kotlin_language_server",
+			"clangd",
+			"kotlin_language_server",
 		},
 	})
 
@@ -241,25 +240,25 @@ function M.setup()
 		"luacheck",
 	})
 
-    ---@param lsp { setup: fun(config: table) }
-    ---@param config table | nil
-    local function setup_with_defaults(lsp, config)
-        local defaults = {
-            on_attach = lsp_on_attach,
-            flags = {
-                debounce_text_changes = 300,
-            },
-            capabilities = capabilities,
-        }
+	---@param lsp { setup: fun(config: table) }
+	---@param config table | nil
+	local function setup_with_defaults(lsp, config)
+		local defaults = {
+			on_attach = M.lsp_on_attach,
+			flags = {
+				debounce_text_changes = 300,
+			},
+			capabilities = capabilities,
+		}
 
-        if config ~= nil then
-            config = vim.tbl_deep_extend("force", defaults, config)
-        else
-            config = defaults
-        end
+		if config ~= nil then
+			config = vim.tbl_deep_extend("force", defaults, config)
+		else
+			config = defaults
+		end
 
-        lsp.setup(config)
-    end
+		lsp.setup(config)
+	end
 
 	setup_with_defaults(lspconfig.jsonls)
 	setup_with_defaults(lspconfig.elmls)
@@ -272,15 +271,27 @@ function M.setup()
 	setup_with_defaults(lspconfig.rescriptls)
 	setup_with_defaults(lspconfig.clangd)
 	setup_with_defaults(lspconfig.kotlin_language_server)
-    
+
+
+    local function get_ocaml_root()
+        local options = vim.fn.systemlist("find . -maxdepth 2 -name 'dune-project'")
+        if #options == 0 then
+            return nil
+        end
+
+        local root = misc.path_root(options[1])
+        local absolute = vim.fn.system('readlink -f ' .. root)
+
+        return absolute:sub(1, #absolute-1)
+    end
+
 	setup_with_defaults(lspconfig.ocamllsp, {
 		on_attach = function(client, bufnr)
-			lsp_on_attach(client, bufnr)
+			M.lsp_on_attach(client, bufnr)
 			codelens.setup_codelens_refresh(bufnr)
 		end,
-		get_language_id = function(_, ftype)
-			return ftype
-		end,
+		--root_dir = get_ocaml_root,
+        --cmd = { misc.build_path({ get_ocaml_root(), "_opam", "bin", "ocamllsp" }) },
 		settings = {
 			extendedHover = { enable = true },
 			codelens = { enable = true },
@@ -295,14 +306,14 @@ function M.setup()
 				-- Code action groups
 				vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
 
-				lsp_on_attach(client, bufnr)
+				M.lsp_on_attach(client, bufnr)
 			end,
 		},
 	})
 
- 	setup_with_defaults(lspconfig.fsautocomplete, {
+	setup_with_defaults(lspconfig.fsautocomplete, {
 		on_attach = function(client, bufnr)
-			lsp_on_attach(client, bufnr)
+			M.lsp_on_attach(client, bufnr)
 			codelens.setup_codelens_refresh(bufnr)
 			-- hints.on_attach(client, bufnr)
 		end,
@@ -339,7 +350,7 @@ function M.setup()
 	})
 
 	lspconfig.lua_ls.setup({
-		on_attach = lsp_on_attach,
+		on_attach = M.lsp_on_attach,
 		settings = {
 			filetypes = { "lua" },
 			Lua = {
@@ -352,7 +363,7 @@ function M.setup()
 		},
 	})
 
-	setupScala(capabilities)
+	setup_scala(capabilities)
 
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 	dap.config()
