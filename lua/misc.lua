@@ -1,5 +1,7 @@
 local M = {}
 
+---Get path separator for platform
+---@return string
 function M.path_sep()
 	if vim.fn.has("win32") == 1 then
 		return [[\]]
@@ -8,10 +10,27 @@ function M.path_sep()
 	end
 end
 
+---Join strings
+---@param parts string[]
+---@param delimiter string | nil
+---@return string
+function M.string_join(parts, delimiter)
+    local output = ""
+
+    for i, value in ipairs(parts) do
+        output = output .. value
+        if delimiter ~= nil and i < #parts then
+            output = output .. delimiter
+        end
+    end
+
+    return output
+end
+
 ---Removes last part of path
 ---Includes trailing slash
 ---@param path string
----@return string
+---@return string | nil
 function M.path_root(path)
 	if path == nil then
 		return nil
