@@ -3,7 +3,7 @@ local has_dap, dap = pcall(require, "dap")
 local has_misc, misc = pcall(require, "misc")
 local has_dapui, dapui = pcall(require, "dapui")
 
-function M.bindKeys()
+function M.bind_keys()
 	if not (has_dap and has_misc and has_dapui) then
 		return
 	end
