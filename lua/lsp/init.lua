@@ -1,7 +1,6 @@
 local M = {}
 local misc = require('misc')
 local dap = require('lsp.dap')
-local snippets = require('lsp.snippets')
 local codelens = require('lsp.codelens')
 
 local lspconfig = require('lspconfig')
@@ -196,12 +195,6 @@ end
 function M.setup()
   setup_cmp()
   setup_keys()
-
-  -- Setup custom snippets - only once though
-  if SnippetsInit ~= true then
-    snippets.add_snippets()
-    SnippetsInit = true
-  end
 
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()

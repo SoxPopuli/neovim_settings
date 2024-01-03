@@ -1,6 +1,14 @@
 return {
   'j-hui/fidget.nvim',
 
+  event = { 'User LspProgressUpdate' },
+  cmd = "Fidget",
+  init = function ()
+      vim.notify = function (...)
+          require('fidget').notify(...)
+      end
+  end,
+
   opts = {
     progress = {
       suppress_on_insert = true,
@@ -26,7 +34,7 @@ return {
     },
 
     notification = {
-      override_vim_notify = true,
+      override_vim_notify = false,
 
       window = {
         normal_hl = 'String',

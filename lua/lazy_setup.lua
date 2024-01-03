@@ -28,7 +28,15 @@ local plugins = {
 
   'preservim/nerdcommenter',
   { 'dracula/vim', name = 'dracula', lazy = true, priority = 1000 },
-  { 'catppuccin/nvim', name = 'catppuccin', lazy = false, priority = 1000 },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    lazy = false,
+    priority = 1000,
+    config = function ()
+        vim.cmd.colorscheme('catppuccin-mocha')
+    end
+  },
   { 'scalameta/nvim-metals', dependencies = { 'nvim-lua/plenary.nvim' }, ft = 'scala' },
 
   'neovim/nvim-lspconfig',
@@ -39,9 +47,6 @@ local plugins = {
   'hrsh7th/cmp-path',
   'hrsh7th/cmp-cmdline',
   { 'simrat39/rust-tools.nvim', ft = 'rust' },
-
-  'L3MON4D3/LuaSnip',
-  'saadparwaiz1/cmp_luasnip',
 
   --{
   --    'ionide/Ionide-vim',
@@ -95,8 +100,6 @@ local plugins = {
 
   -- Better Syntax Support
   'sheerun/vim-polyglot',
-  -- File Explorer
-  'nvim-tree/nvim-tree.lua',
 
   -- Auto pairs for '(' '[' '{'
   {
@@ -104,9 +107,6 @@ local plugins = {
     dependencies = 'hrsh7th/nvim-cmp',
   },
   -- If you want insert `(` after select function or method item
-
-  -- tmux integration
-  'aserowy/tmux.nvim',
 
   -- Async linting
   'mfussenegger/nvim-lint',

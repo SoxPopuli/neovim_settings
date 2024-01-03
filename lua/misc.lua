@@ -100,8 +100,9 @@ function M.get_args(fn)
 end
 
 ---Check if an item in list matches predicate
----@param list any[]
----@param pred fun(item: any): boolean
+---@generic T
+---@param list T[]
+---@param pred fun(item: T): boolean
 function M.contains(list, pred)
   for _, value in pairs(list) do
     if pred(value) then

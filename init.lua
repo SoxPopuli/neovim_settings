@@ -16,9 +16,6 @@ if vim.go.loadplugins then
   vim.go.termdebug_wide = 1
 end
 
-vim.cmd.colorscheme('catppuccin-mocha')
-vim.cmd.colorscheme('catppuccin-mocha')
-
 vim.o.path = vim.o.path .. '**'
 vim.o.listchars = vim.o.listchars .. ',space:·'
 
