@@ -33,15 +33,15 @@ local plugins = {
     name = 'catppuccin',
     lazy = false,
     priority = 1000,
-    config = function ()
-        vim.cmd.colorscheme('catppuccin-mocha')
-    end
+    config = function()
+      vim.cmd.colorscheme('catppuccin-mocha')
+    end,
   },
   { 'scalameta/nvim-metals', dependencies = { 'nvim-lua/plenary.nvim' }, ft = 'scala' },
 
   'neovim/nvim-lspconfig',
   { 'williamboman/mason.nvim', build = ':MasonUpdate' },
-  'williamboman/mason-lspconfig.nvim',
+  { 'williamboman/mason-lspconfig.nvim', dependencies = { 'neovim/nvim-lspconfig' } },
   'hrsh7th/cmp-nvim-lsp',
   'hrsh7th/cmp-buffer',
   'hrsh7th/cmp-path',
@@ -78,8 +78,44 @@ local plugins = {
   },
 
   -- Debugger protocol support
-  'mfussenegger/nvim-dap',
+  {
+    'mfussenegger/nvim-dap',
+    config = function()
+      local lsp_dap = require('lsp.dap')
+
+      lsp_dap.config()
+      lsp_dap.bind_keys()
+    end,
+  },
   { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap' } },
+  {
+    'mxsdev/nvim-dap-vscode-js',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+      {
+        'microsoft/vscode-js-debug',
+        lazy = true,
+        build = 'npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out',
+      },
+    },
+    opts = {
+      -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
+      debugger_path = require('misc').build_path({
+        vim.fn.stdpath('data'),
+        'lazy',
+        'vscode-js-debug',
+        --'js-debug',
+        --'src',
+        --'dapDebugServer.js',
+      }),
+      -- Path to vscode-js-debug installation.
+      -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+      adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
+      -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
+      -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
+      -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
+    },
+  },
 
   -- Treesitter
   {

@@ -3,10 +3,35 @@ local misc = require('misc')
 local function apply_formatting(bufnr)
   local conform = require('conform')
 
+  ---@type string
+  local mode = vim.fn.mode():lower():sub(1, 1)
+
+--[[
+   [  local range = (function ()
+   [      local function tuple(pos)
+   [          return { pos[2], pos[3] }
+   [      end
+   [
+   [      if mode == 'v' then
+   [          local first = tuple(vim.fn.getpos('v'))
+   [          local last = tuple(vim.fn.getpos('.'))
+   [
+   [          if first[0] < last[0] then
+   [              return { ["start"] = first, ["end"] = last }
+   [          else
+   [              return { ["start"] = last, ["end"] = first }
+   [          end
+   [      end
+   [
+   [      return nil
+   [  end)()
+   ]]
+
   local opts = {
     bufnr = bufnr,
     async = true,
     lsp_fallback = true,
+    --range = range,
   }
 
   local bufname = vim.api.nvim_buf_get_name(0)
@@ -63,6 +88,7 @@ return {
         apply_formatting(current_buffer)
       end,
       desc = 'Format buffer',
+      mode = { 'n', 'v' },
     },
   },
 }

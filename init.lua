@@ -51,6 +51,9 @@ vim.o.fixeol = false -- Preserve original end of line status
 -- Keybinds
 local set = vim.keymap.set
 
+set('n', 'L', '$')
+set('n', 'H', '_')
+
 set('n', '<F1>', '<Cmd>:nohl<CR>')
 set({ 'n', 'i', 'c' }, '<F2>', [[<Cmd>:set list! | set list?<CR>]])
 set('n', '<A-z>', [[:set wrap! | set wrap?<CR>]])
@@ -59,7 +62,7 @@ set({ 'i', 'c' }, '<C-BS>', '<C-w>', { remap = true })
 set({ 'i', 'c' }, '<C-h>', '<C-w>', { remap = true })
 
 -- Escape terminal input with esc
-set('t', '<Esc>', '<C-\\><C-n>')
+set('t', '<space><Esc>', '<C-\\><C-n>')
 
 -- Ctrl-Z undo
 set('i', '<C-z>', '<cmd>:undo<cr>')
@@ -97,6 +100,11 @@ end, { desc = 'Maximize window' })
 set('n', '<C-w>x', '<cmd>:q<cr>', { desc = 'Close window' })
 
 set('n', '<space><space>', 'a<space><Esc>h', { desc = 'Add space after cursor' })
+
+set('n', '<space>i', 'i<space><Esc>i', { desc = 'Insert before space', remap = false })
+set('n', '<space>I', 'I<space><Esc>i', { desc = 'Insert before space', remap = false })
+
+set('n', '<space>a', 'a<space><Esc>i', { desc = 'Append before space', remap = false })
 
 -- Move binds
 set('i', '<A-k>', '<cmd>:m .-2<cr><C-o>==', { silent = true })

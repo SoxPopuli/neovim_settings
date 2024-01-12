@@ -1,6 +1,5 @@
 local M = {}
 local misc = require('misc')
-local dap = require('lsp.dap')
 local codelens = require('lsp.codelens')
 
 local lspconfig = require('lspconfig')
@@ -358,8 +357,6 @@ function M.setup()
   setup_scala(capabilities)
 
   vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
-  dap.config()
-  dap.bind_keys()
 end
 
 require('vim.lsp.codelens').on_codelens = codelens.codelens_fix()

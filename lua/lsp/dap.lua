@@ -69,25 +69,49 @@ function M.bind_keys()
 end
 
 function M.config()
+  local data_path = vim.fn.stdpath('data')
   local mason_bin = misc.build_path({
-    vim.fn.stdpath('data'),
+    data_path,
     'mason',
     'bin',
   })
 
-  dap.adapters.coreclr = {
-    type = 'executable',
-    command = misc.build_path({ mason_bin, 'netcoredbg' }),
-    args = { '--interpreter=vscode' },
-  }
-
-  dap.adapters.codelldb = {
-    type = 'server',
-    port = '${port}',
-    executable = {
-      command = misc.build_path({ mason_bin, 'codelldb' }),
-      args = { '--port', '${port}' },
+  dap.adapters = {
+    coreclr = {
+      type = 'executable',
+      command = misc.build_path({ mason_bin, 'netcoredbg' }),
+      args = { '--interpreter=vscode' },
     },
+
+    codelldb = {
+      type = 'server',
+      port = '${port}',
+      executable = {
+        command = misc.build_path({ mason_bin, 'codelldb' }),
+        args = { '--port', '${port}' },
+      },
+    },
+
+    --["pwa-node"] = {
+    --  type = 'server',
+    --  host = 'localhost',
+    --  port = '${port}',
+    --  executable = {
+    --    command = 'node',
+    --    args = {
+    --      misc.build_path({
+    --        data_path,
+    --        'mason',
+    --        'packages',
+    --        'js-debug-adapter',
+    --        'js-debug',
+    --        'src',
+    --        'dapDebugServer.js',
+    --      }),
+    --      '${port}',
+    --    },
+    --  },
+    --},
   }
 
   local dotnetConfig = {
@@ -132,13 +156,22 @@ function M.config()
   }
 end
 
-vim.api.nvim_create_user_command('DapLoadLaunchJSON', function(_)
+vim.api.nvim_create_user_command('DapLoadLaunchJSON', function(args)
   local mappings = {
     codelldb = { 'c', 'cpp', 'rust' },
     coreclr = { 'cs', 'fsharp', 'vb' },
+    ["pwa-node"] = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }
   }
 
-  require('dap.ext.vscode').load_launchjs(nil, mappings)
-end, { force = true, desc = 'Load debug config from .vscode/launch.json' })
+  local path = (function()
+    if args.args:len() == 0 then
+      return nil
+    else
+      return args.args
+    end
+  end)()
+
+  require('dap.ext.vscode').load_launchjs(path, mappings)
+end, { force = true, desc = 'Load debug config from .vscode/launch.json', nargs = '?' })
 
 return M

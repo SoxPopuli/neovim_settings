@@ -30,21 +30,7 @@ local ms = ls.multi_snippet
 local k = require('luasnip.nodes.key_indexer').new_key
 --
 
-function M.add_snippets()
-  ls.add_snippets('ocaml', {
-    s(
-      'module',
-      fmt(
-        [[
-        module {} = struct
-            {}
-        end
-        ]],
-        { i(1, 'Name'), i(2, '') }
-      )
-    ),
-  })
-
+local function fsharp()
   ls.add_snippets('fsharp', {
     s('todo', t('failwith "todo"')),
     s('arm', { t('| '), i(1, 'case'), t(' -> '), i(2, '()') }),
@@ -106,6 +92,44 @@ function M.add_snippets()
       )
     ),
   })
+end
+
+local function ocaml()
+  ls.add_snippets('ocaml', {
+    s(
+      'module',
+      fmt(
+        [[
+        module {} = struct
+            {}
+        end
+        ]],
+        { i(1, 'Name'), i(2, '') }
+      )
+    ),
+  })
+end
+
+local function js()
+  ls.add_snippets('javascript', {
+    s('doc', { t('/** '), i(1, ' '), t(' */') }),
+    s(
+      'doc',
+      fmt([[
+      /**
+       * {}
+       */
+      ]], { i(1, '') })
+    ),
+  })
+
+  ls.filetype_extend('javascript', { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' })
+end
+
+function M.add_snippets()
+  ocaml()
+  fsharp()
+  js()
 end
 
 return M
