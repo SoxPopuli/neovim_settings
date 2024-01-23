@@ -92,48 +92,11 @@ function M.config()
       },
     },
 
-    --["pwa-node"] = {
-    --  type = 'server',
-    --  host = 'localhost',
-    --  port = '${port}',
-    --  executable = {
-    --    command = 'node',
-    --    args = {
-    --      misc.build_path({
-    --        data_path,
-    --        'mason',
-    --        'packages',
-    --        'js-debug-adapter',
-    --        'js-debug',
-    --        'src',
-    --        'dapDebugServer.js',
-    --      }),
-    --      '${port}',
-    --    },
-    --  },
-    --},
-  }
-
-  local dotnetConfig = {
-    {
-      type = 'coreclr',
-      name = 'launch - netcoredbg',
-      request = 'launch',
-      program = function()
-        local items = vim.fn.globpath(vim.fn.getcwd(), '**/*.dll', false, true)
-        local indexed = {}
-        for i = 1, #items do
-          indexed[i] = i .. ': ' .. items[i]
-        end
-
-        local choice = vim.fn.inputlist(indexed)
-        return items[choice]
-      end,
+    ["ocaml.earlybird"] = {
+        type = 'server',
+        port = '4711'
     },
   }
-
-  dap.configurations.cs = dotnetConfig
-  dap.configurations.fsharp = dotnetConfig
 
   dap.configurations.scala = {
     {

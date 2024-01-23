@@ -4,7 +4,6 @@ local codelens = require('lsp.codelens')
 
 local lspconfig = require('lspconfig')
 local cmp = require('cmp')
-local rt = require('rust-tools')
 local hints = require('inlay-hints')
 
 hints.setup({
@@ -158,39 +157,6 @@ local function setup_cmp()
   })
 end
 
--- Scala LSP
-local function setup_scala(capabilities)
-  local metals_config = require('metals').bare_config()
-  metals_config.settings = {
-    showImplicitArguments = true,
-    showInferredType = true,
-    showImplicitConversionsAndClasses = true,
-    superMethodLensesEnabled = true,
-    enableSemanticHighlighting = true,
-    excludedPackages = { 'akka.actor.typed.javadsl', 'com.github.swagger.akka.javadsl' },
-  }
-  metals_config.init_options.statusBarProvider = 'on'
-
-  metals_config.capabilities = capabilities
-  metals_config.on_attach = function(client, bufnr)
-    require('metals').setup_dap()
-    M.lsp_on_attach(client, bufnr)
-  end
-
-  -- Autocmd that will actually be in charging of starting the whole thing
-  local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
-  vim.api.nvim_create_autocmd('FileType', {
-    -- NOTE: You may or may not want java included here. You will need it if you
-    -- want basic Java support but it may also conflict if you are using
-    -- something like nvim-jdtls which also works on a java filetype autocmd.
-    pattern = { 'scala', 'sbt', 'java' },
-    callback = function()
-      require('metals').initialize_or_attach(metals_config)
-    end,
-    group = nvim_metals_group,
-  })
-end
-
 function M.setup()
   setup_cmp()
   setup_keys()
@@ -289,18 +255,6 @@ function M.setup()
     },
   })
 
-  rt.setup({
-    server = {
-      on_attach = function(client, bufnr)
-        -- Hover actions
-        vim.keymap.set('n', '<C-space>', rt.hover_actions.hover_actions, { buffer = bufnr })
-        -- Code action groups
-        vim.keymap.set('n', '<Leader>a', rt.code_action_group.code_action_group, { buffer = bufnr })
-
-        M.lsp_on_attach(client, bufnr)
-      end,
-    },
-  })
 
   setup_with_defaults(lspconfig.fsautocomplete, {
     on_attach = function(client, bufnr)
@@ -353,8 +307,6 @@ function M.setup()
       },
     },
   })
-
-  setup_scala(capabilities)
 
   vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
 end

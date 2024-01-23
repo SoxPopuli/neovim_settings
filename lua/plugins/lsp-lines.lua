@@ -3,16 +3,16 @@ local lines_config = {
   only_current_line = true,
 }
 
-
 return {
-  url = 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+  --url = 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+  url = 'https://github.com/ErichDonGubler/lsp_lines.nvim.git',
   name = 'lsp_lines',
 
   dependencies = {
     'neovim/nvim-lspconfig',
   },
 
-  events = { 'LspAttach' },
+  event = { 'LspAttach' },
 
   enabled = true,
 
@@ -24,9 +24,9 @@ return {
 
     require('lsp_lines').setup()
 
-    vim.keymap.set('', '<Leader>l', function ()
+    vim.keymap.set('', '<Leader>l', function()
       if vim.diagnostic.config().virtual_lines == false then
-        vim.diagnostic.config({virtual_lines = lines_config})
+        vim.diagnostic.config({ virtual_lines = lines_config })
       else
         vim.diagnostic.config({ virtual_lines = false })
       end

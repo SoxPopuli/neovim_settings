@@ -73,7 +73,7 @@ return {
         desc = 'Search git branches',
       },
       {
-        '<space>s',
+        '<leader>ts',
         function()
           require('telescope.builtin').spell_suggest()
         end,
