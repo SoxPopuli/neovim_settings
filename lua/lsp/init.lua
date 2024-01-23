@@ -183,6 +183,7 @@ function M.setup()
       'rescriptls',
       'clangd',
       'kotlin_language_server',
+      'taplo',
     },
   })
 
@@ -229,6 +230,7 @@ function M.setup()
   setup_with_defaults(lspconfig.rescriptls)
   setup_with_defaults(lspconfig.clangd)
   setup_with_defaults(lspconfig.kotlin_language_server)
+  setup_with_defaults(lspconfig.taplo)
 
   local function get_ocaml_root()
     local options = vim.fn.systemlist("find . -maxdepth 2 -name 'dune-project'")

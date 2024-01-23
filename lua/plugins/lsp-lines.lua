@@ -4,8 +4,8 @@ local lines_config = {
 }
 
 return {
-  --url = 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
-  url = 'https://github.com/ErichDonGubler/lsp_lines.nvim.git',
+  url = 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+  --url = 'https://github.com/ErichDonGubler/lsp_lines.nvim.git',
   name = 'lsp_lines',
 
   dependencies = {
