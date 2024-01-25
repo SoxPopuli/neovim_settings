@@ -51,8 +51,8 @@ vim.o.fixeol = false -- Preserve original end of line status
 -- Keybinds
 local set = vim.keymap.set
 
-set('n', 'L', '$')
-set('n', 'H', '_')
+--set('n', 'L', 'g$')
+--set('n', 'H', 'g_')
 
 set('n', '<F1>', '<Cmd>:nohl<CR>')
 set({ 'n', 'i', 'c' }, '<F2>', [[<Cmd>:set list! | set list?<CR>]])

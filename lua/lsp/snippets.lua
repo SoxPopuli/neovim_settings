@@ -96,17 +96,52 @@ end
 
 local function ocaml()
   ls.add_snippets('ocaml', {
-    s(
-      'module',
-      fmt(
-        [[
-        module {} = struct
-            {}
-        end
-        ]],
-        { i(1, 'Name'), i(2, '') }
-      )
-    ),
+    s('module', {
+      t('module '),
+      c(1, {
+        sn(nil, {
+          i(1, 'Module'),
+          t({ ' = struct', '\t' }),
+          i(2, ' '),
+          t({ '', 'end' }),
+        }),
+
+        sn(nil, {
+          t('type '),
+          i(1, 'Module'),
+          t({ ' = sig', '\t' }),
+          i(2, ' '),
+          t({ '', 'end' }),
+        }),
+      }),
+    }),
+
+    s({ trig = 'let', desc = 'Choose from variable, function or module' }, {
+      t('let '),
+
+      c(1, {
+        sn(nil, {
+          i(1, 'name'),
+          t(' = '),
+          i(2, 'value'),
+          t(' in'),
+        }, { key = 'var' }),
+
+        sn(nil, {
+          i(1, 'func'),
+          t(' '),
+          i(2, '()'),
+          t({ ' =', '\t' }),
+          i(3, '()'),
+        }, { key = 'function' }),
+
+        sn(nil, {
+          t('open '),
+          i(1, 'Module'),
+          t(' in'),
+        }),
+      }),
+    }),
   })
 end
 
@@ -115,11 +150,14 @@ local function js()
     s('doc', { t('/** '), i(1, ' '), t(' */') }),
     s(
       'doc',
-      fmt([[
+      fmt(
+        [[
       /**
        * {}
        */
-      ]], { i(1, '') })
+      ]],
+        { i(1, '') }
+      )
     ),
   })
 

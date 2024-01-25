@@ -92,9 +92,11 @@ function M.config()
       },
     },
 
-    ["ocaml.earlybird"] = {
-        type = 'server',
-        port = '4711'
+    ocaml = {
+      type = 'executable',
+      command = './_opam/bin/ocamlearlybird',
+      args = { 'debug' },
+      cwd = '${workspaceFolder}',
     },
   }
 
@@ -123,7 +125,8 @@ vim.api.nvim_create_user_command('DapLoadLaunchJSON', function(args)
   local mappings = {
     codelldb = { 'c', 'cpp', 'rust' },
     coreclr = { 'cs', 'fsharp', 'vb' },
-    ["pwa-node"] = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }
+    ['pwa-node'] = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+    ocaml = { 'ocaml', 'reason' },
   }
 
   local path = (function()
